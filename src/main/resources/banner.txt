@@ -1,0 +1,17 @@
+YaYa-Boot版本         :  ${yaya.version}
+Jdk版本               :  ${java.version}
+SpringBoot版本        :  ${spring-boot.version}
+我的BLOG              :  https://hs-an-yue.github.io
+我的EMAIL             :  hd1611756908@163.com
+基于LayUI的开源模板     :  https://gitee.com/ukoko/yaya-layui-admin-plus
+-------------------------YaYa-Boot-适配YaYa-Layui-Admin-Plus模板-------------------------
+ __   __  __   __          ____              _       ____   ___ ____   __
+ \ \ / /_ \ \ / /_ _      | __ )  ___   ___ | |_    |___ \ / _ \___ \ / /_
+  \ V / _` \ V / _` |_____|  _ \ / _ \ / _ \| __|____ __) | | | |__) | '_ \
+   | | (_| || | (_| |_____| |_) | (_) | (_) | ||_____/ __/| |_| / __/| (_) |
+   |_|\__,_||_|\__,_|     |____/ \___/ \___/ \__|   |_____|\___/_____|\___/
+
+-------------------------YaYa-Boot-适配YaYa-Layui-Admin-Plus模板-------------------------
+Spring      : https://start.spring.io/
+Banner      : https://tooltt.com/art-ascii/
+Cron        : https://cron.ciding.cc/

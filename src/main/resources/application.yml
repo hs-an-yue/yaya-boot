@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: yaya-boot
+  profiles:
+    active: dev

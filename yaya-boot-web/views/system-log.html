@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- 响应式配置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- LayUI css库 -->
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <link rel="stylesheet" href="../css/yaya-common.css">
+    <link rel="stylesheet" href="../css/yaya-style-extend.css">
+    <title>系统日志</title>
+</head>
+<body>
+<div class="yaya-container">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <!-- 搜索条件 -->
+            <div class="yaya-panel">
+                <form class="layui-form" style="padding: 10px 0;">
+                    <div class="layui-row">
+                        <div class="layui-col-md3 layui-col-sm3 yaya-form-item">
+                            <label class="yaya-form-label">日志追踪</label>
+                            <div class="yaya-input-block">
+                                <input type="text" name="trackId" placeholder="请输入追踪ID" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 layui-col-sm3 yaya-form-item">
+                            <label class="yaya-form-label">状态</label>
+                            <div class="yaya-input-block">
+                                <select name="status">
+                                    <option value="">状态</option>
+                                    <option value="1">成功</option>
+                                    <option value="0">失败</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 layui-col-sm3 yaya-form-item">
+                            <label class="yaya-form-label">时间范围</label>
+                            <div class="yaya-input-block">
+                                <input type="text" name="datetime" class="layui-input" id="shortcut-range-datetime" placeholder="时间范围">
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 layui-col-sm3 yaya-form-item" style="padding-top: 2px;">
+                            <button type="button" class="yaya-btn yaya-primary" lay-submit lay-filter="search">搜索</button>
+                            <button type="reset" class="yaya-btn" style="margin-left: 10px;">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="layui-row layui-panel" style="margin-top: 15px;">
+            <!-- 表格显示 -->
+            <table class="layui-hide" id="table-login-log" lay-filter="table-login-log"></table>
+        </div>
+    </div>
+</div>
+    <script src="../layui/layui.js"></script>
+    <script src="../js/server.js"></script>
+    <script>
+        layui.use(function(){
+            const $ = layui.$;
+            const table = layui.table;
+            const laydate = layui.laydate;
+            const form = layui.form;
+             
+
+            //表格渲染
+            table.render({
+                elem: '#table-login-log',
+                url: server_url+'/getSysOperationLogPage',
+                headers:{
+                    'Authorization':token
+                },
+                where:{logType:2},
+                skin:'line',
+                height:'full',
+                parseData: function(res){
+                    return {
+                        "code" : res.code,
+                        "msg"  : res.msg,
+                        "data" : res.data.list,
+                        "count": res.data.count
+                    }
+                },
+                page:{
+                    prev:'上一页',
+                    next:'下一页',
+                    limit:10,
+                    limits:[10,20,30,40,50],
+                    theme:'#409eff'
+                },
+                request: {
+                    pageName: 'pageNo', // 页码的参数名称，默认：page
+                    limitName: 'pageSize' // 每页数据条数的参数名，默认：limit
+                },
+                cols: [[
+                    {type: 'numbers', fixed: 'left'},
+                    {
+                        field:'operationTime',
+                        title: '操作时间',
+                        width: 160
+                    },
+                    {
+                        title: '操作人',
+                        width: 200,
+                        templet: function(d){
+                            return d.operationUser?d.operationUser.username:'匿名';
+                        }
+                    },
+                    {
+                        field:'operationUrl',
+                        title: '请求地址',
+                        width: 200
+                    },
+                    {
+                        field:'operationParams',
+                        title: '操作参数',
+                        width: 350
+                    },
+                    {
+                        title: '系统',
+                        field:'os',
+                        width: 300
+                    },
+                    {
+                        title: 'IP',
+                        field:'ip',
+                        width: 150
+                    },
+                    {
+                        title: '地址',
+                        field:'address',
+                        width: 200
+                    },
+                    {
+                        title: '提示消息',
+                        field:'errorMsg',
+                        width: 150
+                    },
+                    {
+                        title: '追踪ID',
+                        field:'trackId',
+                        width: 300
+                    },
+                    {
+                        title: '状态',
+                        fixed: 'right',
+                        width: 100,
+                        templet: function(d){
+                            let status = d.status;
+                            if(status===1){
+                                return `<span style='color:#1476ff;background-color:#e6f4ff;border-color:#8fc9ff;padding:4px 9px;border-radius:4px;font-size:12px;'>成功</span>`;
+                            }else{
+                                return `<span style='color:#ff3860;background-color:#fff0f0;border-color:#ffb3ba;padding:4px 9px;border-radius:4px;font-size:12px;'>失败</span>`;
+                            }
+                        }
+                    }
+                ]]
+            })
+        
+            
+            //时间插件
+            laydate.render({
+                elem: "#shortcut-range-datetime",
+                type: "datetime",
+                range: true
+            });
+
+            //搜索渲染
+            form.on('submit(search)', function(data){
+                let field = data.field; // 获得表单字段
+                field.logType = 2;
+                //时间处理
+                let datetime = field.datetime;
+                if(datetime && datetime.length>0){
+                    const [startTime, endTime] = datetime.split(' - ').map(item => item.trim());
+                    field.startTime=startTime;
+                    field.endTime=endTime;
+                }
+                // 执行搜索重载
+                table.reload('table-login-log', {
+                    page: {
+                        curr: 1, // 重新从第 1 页开始
+                        prev:'上一页',
+                        next:'下一页',
+                        limit:10,
+                        limits:[10,20,30,40,50],
+                        theme:'#409eff'
+                    },
+                    where: field // 搜索的字段
+                });
+                return false; // 阻止默认 form 跳转
+            });
+        });
+    </script>
+</body>
+</html>

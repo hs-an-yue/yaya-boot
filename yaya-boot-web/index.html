@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- 响应式配置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 标签icon设置 -->
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <title>首页</title>
+    <!-- LayUI css库 -->
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <!-- 首页核心 css库 -->
+    <link rel="stylesheet" href="css/index.css">
+    <!-- 首页-操作导航菜 css库 -->
+    <link rel="stylesheet" href="css/menu.css">
+    <!-- 引入第三方字体图标 -->
+    <link rel="stylesheet" href="font/iconfont.css">
+</head>
+<body>
+    <!--
+        首页布局
+            左右布局
+                左侧: LOGO|标题 + 导航菜单
+                右侧: 工具栏 + 选项卡 + 网站主体内容显示区
+       开发者信息:
+            产品设计: 夜泊1990
+            产品开发: 夜泊1990
+            产品维护: 夜泊1990
+            运营推广: 夜泊1990
+            联系邮箱: hd1611756908@163.com
+            个人博客: https://hs-an-yue.github.io/
+            个人B站 : https://space.bilibili.com/514155929/
+    -->
+    <div class="yaya-container">
+        <!--左侧-->
+        <div id="yaya-left" class="yaya-left">
+            <!-- LOGO -->
+            <div class="yaya-logo">
+                <!-- LOGO图标 -->
+                <svg t="1772439653680" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5491" width="25" height="25"><path d="M879.427918 0H144.572082A144.990041 144.990041 0 0 0 0 144.572082v734.855836A144.990041 144.990041 0 0 0 144.572082 1024h734.855836A144.990041 144.990041 0 0 0 1024 879.427918V144.572082A144.990041 144.990041 0 0 0 879.427918 0zM693.812245 417.959184c-72.265143 36.153469-48.190694 96.381388-36.153469 132.534857s24.074449 108.418612 24.074448 144.572081c0 144.572082-103.904653 218.550857-204.8 180.725551-96.590367-36.153469-132.576653-108.460408-72.306938-265.069714 72.265143-156.609306-72.265143-180.725551-144.572082-204.8-84.511347-24.074449-132.534857-132.493061-72.306939-204.8 72.265143-84.344163 204.8-36.153469 228.874449 48.190694 12.037224 48.190694 84.344163 96.381388 144.572082 60.227918 72.265143-48.190694 123.214367-222.019918 240.953469-156.609306C910.607673 213.159184 874.454204 345.694041 693.812245 417.959184z" fill="var(--tab-text)" p-id="5492"></path></svg>
+                <!-- 标题 -->
+                <h4>丫A丫A 管理系统</h4>
+            </div>
+            <!-- 导航菜单 采用的手风琴效果 -->
+            <ul class="layui-menu" id="yaya-menu" lay-accordion>
+                <!-- 菜单项-默认菜单 -->
+                <li yaya-id="999999999" yaya-url="views/dashboard.html" yaya-title="仪表盘" onclick="yaya_add('999999999', '仪表盘', 'views/dashboard.html')" class="layui-menu-item-checked"><!-- 默认选中 -->
+                    <div class="layui-menu-body-title">
+                        <a><span><i class="layui-icon layui-icon-chart-screen"></i>&nbsp;&nbsp;仪表盘</span></a>
+                    </div>
+                </li>
+                <!-- 其它菜单由后端动态生成 ... -->
+            </ul>
+        </div>
+        <!--右侧-->
+        <div class="yaya-right">
+            <!-- 工具条 -->
+            <div class="yaya-right-bar">
+                <!-- 工具条左侧内容 -->
+                <div class="yaya-right-bar-left">
+                    <!--菜单图标-->
+                    <img id="menu-icon" style="width: 20px;height: 20px;" src="image/icon/menu.png" alt="menu">
+                    <!--菜单刷新-->
+                    <img onclick="yaya_refresh()" style="width: 17px;height: 17px;" src="image/icon/refresh.png" alt="refresh">
+                    <!--面包屑菜单-->
+                    <span class="layui-breadcrumb" lay-filter="yaya-breadcrumb" style="margin-left: 15px;">
+                      <!-- 默认选项卡 -->
+                      <a><cite>仪表盘</cite></a>
+                    </span>
+                </div>
+                <!-- 工具条右侧内容 -->
+                <div class="yaya-right-bar-right">
+                    <!--消息提示-->
+                    <img lay-on="bell-icon" style="width: 17px;height: 17px;margin-right: 10px;" src="image/icon/bell.png" alt="bell">
+                    <!--主题配置-->
+                    <img lay-on="theme-icon" style="width: 19px;height: 19px;" src="image/icon/theme.png" alt="theme">
+                    <!--用户信息-->
+                    <ul class="layui-nav">
+                        <li class="layui-nav-item" lay-unselect>
+                            <a href="javascript:">
+                                <img src="image/avatar.gif" class="layui-nav-img" alt="avatar">
+                                <span style="color: #1f1f1f;font-size: 12px;">蜡笔小新</span>
+                            </a>
+                            <dl class="layui-nav-child">
+                                <dd><a onclick="yaya_add('888888888','个人中心','views/personal-center.html')">个人中心</a></dd>
+                                <dd id="pwdChange"><a>修改密码</a></dd>
+                                <dd id="logout"><a>退出</a></dd>
+                            </dl>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 页面选项卡 | 网站内容显示区 -->
+            <div class="layui-tabs" id="yaya-right-tab" style="transition: width 0.3s ease;">
+                <!-- 选项卡 + 内容显示 -->
+            </div>
+        </div>
+    </div>
+    <script src="layui/layui.js"></script>
+    <script src="js/server.js"></script>
+    <script src="js/yaya-admin-plus.js"></script>
+    <script>
+        layui.use(function (){
+            const $ = layui.$;
+            const layer = layui.layer;
+
+            //判断当前token是否存在,并且依然有效
+            if(token && token.length>0){
+                //判断用户信息是否存在
+                if(user && Object.keys(user).length>0){
+                    //开启加载图标
+                    let index = layer.load(0);
+                    $.ajax({
+                        url: server_url+'/checkToken',
+                        type:'GET',
+                        dataType:'json',
+                        headers:{
+                            'Authorization': token
+                        },
+                        success: function(resp){
+                            //关闭加载图标
+                            layer.close(index);
+                            if(resp.code!==0){
+                                layui.sessionData('yaya', null);
+                                setTimeout(function(){
+                                    layer.msg(resp.msg);
+                                    //跳转回登录页
+                                    location.href="login.html";
+                                },1000)
+                            }
+                        }
+                    });
+                }else{
+                    //清空登陆信息
+                    layui.sessionData('yaya', null);
+                    //用户信息丢失直接跳转到登陆页
+                    location.href="login.html";
+                }
+            }else{
+                //清空登陆信息
+                layui.sessionData('yaya', null);
+                //token不存在直接跳转到登陆页
+                location.href="login.html";
+            }
+
+
+            //退出登陆
+            $("#logout").click(function(){
+                if(token && token.length>0){
+                    //开启加载图标
+                    let index = layer.load(0);
+                    $.ajax({
+                        url: server_url+'/logout',
+                        type:'GET',
+                        dataType:'json',
+                        headers:{
+                            'Authorization': token
+                        },
+                        success: function(resp){
+                            //关闭加载图标
+                            layer.close(index);
+                            if(resp.code===0){
+                                layui.sessionData('yaya', null);
+                                //跳转回登录页
+                                location.href="login.html";
+                            }else{
+                                layer.msg(resp.msg)
+                            }
+                        }
+                    });
+                    
+                }else{
+                    //直接删除session数据
+                    layui.sessionData('yaya', null);
+                }
+            });
+
+
+
+            /* 修改密码 */
+            $("#pwdChange").click(function (){
+                layer.open({
+                    type: 2,
+                    title: '修改密码',
+                    shadeClose: true,
+                    shade: 0.3,
+                    offset:'100px',
+                    area: ['350px', '300px'],
+                    content: 'views/pwd-change.html'
+                });
+
+            })
+        });
+    </script>
+</body>
+</html>

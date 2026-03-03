@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yaya.boot.mapper.SysMenuMapper">
+
+    <resultMap id="menuMap" type="sysMenu">
+        <id column="menu_id" property="menuId"/>
+        <result column="menu_title" property="menuTitle"/>
+        <result column="menu_icon" property="menuIcon"/>
+        <result column="menu_type" property="menuType"/>
+        <result column="perms" property="perms"/>
+        <result column="menu_url" property="menuUrl"/>
+        <result column="menu_level" property="menuLevel"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="status" property="status"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="create_by_id" property="createById"/>
+        <result column="update_by_id" property="updateById"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <collection property="children" column="{parentId=menu_id,status=status}" select="com.yaya.boot.mapper.SysMenuMapper.getSubSysMenuTree"/>
+    </resultMap>
+
+    <select id="getSysMenuTree" resultMap="menuMap">
+        SELECT
+            *
+        FROM
+            sys_menu
+        <where>
+            is_delete = 0
+            AND parent_id = '0'
+            <if test="status!=null"> AND `status` = #{status}</if>
+            <if test="menuTitle!=null and menuTitle!=''">  AND menu_title LIKE CONCAT( '%', #{menuTitle}, '%' )</if>
+        </where>
+        ORDER BY order_num
+    </select>
+    
+    <select id="getSubSysMenuTree" resultMap="menuMap">
+        SELECT
+            *
+        FROM
+            sys_menu
+        <where>
+            is_delete = 0
+            AND parent_id = #{parentId}
+            <if test="status!=null"> AND `status` = #{status}</if>
+        </where>
+        ORDER BY order_num
+    </select>
+
+    <resultMap id="menuMapLeft" type="sysMenu">
+        <id column="menu_id" property="menuId"/>
+        <result column="menu_title" property="menuTitle"/>
+        <result column="menu_icon" property="menuIcon"/>
+        <result column="menu_type" property="menuType"/>
+        <result column="perms" property="perms"/>
+        <result column="menu_url" property="menuUrl"/>
+        <result column="menu_level" property="menuLevel"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="status" property="status"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="create_by_id" property="createById"/>
+        <result column="update_by_id" property="updateById"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <collection property="children" column="{parentId=menu_id}" select="com.yaya.boot.mapper.SysMenuMapper.getSubSysMenuTreeExcludeButton"/>
+    </resultMap>
+    <select id="getSysMenuTreeExcludeButton" resultMap="menuMapLeft">
+        SELECT
+            *
+        FROM
+            sys_menu
+        <where>
+            is_delete = 0
+            AND parent_id = '0'
+        </where>
+        ORDER BY order_num
+    </select>
+
+    <select id="getSubSysMenuTreeExcludeButton" resultMap="menuMapLeft">
+        SELECT
+            *
+        FROM
+            sys_menu
+        <where>
+            is_delete = 0
+            AND parent_id = #{parentId}
+        </where>
+        ORDER BY order_num
+    </select>
+
+    <resultMap id="menuAuthMap" type="sysMenu">
+        <id column="menu_id" property="menuId"/>
+        <result column="menu_title" property="menuTitle"/>
+        <result column="menu_icon" property="menuIcon"/>
+        <result column="menu_type" property="menuType"/>
+        <result column="perms" property="perms"/>
+        <result column="menu_url" property="menuUrl"/>
+        <result column="menu_level" property="menuLevel"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="status" property="status"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="create_by_id" property="createById"/>
+        <result column="update_by_id" property="updateById"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <collection property="children" column="{roleId=role_id,parentId=menu_id}" select="com.yaya.boot.mapper.SysMenuMapper.getAuthChildrenSysMenu"/>
+    </resultMap>
+    <select id="getAuthSysMenuByRoleId" resultMap="menuAuthMap">
+        SELECT
+            m.*,rm.role_id
+        FROM
+            sys_role_menu rm,
+            sys_menu m
+        WHERE
+            rm.menu_id = m.menu_id
+            AND m.parent_id = '0'
+            AND m.is_delete = 0
+            AND m.status = 0
+            AND m.menu_type IN(1,2)
+            AND rm.role_id = #{roleId}
+        ORDER BY m.order_num
+    </select>
+    
+    <select id="getAuthChildrenSysMenu" resultMap="menuAuthMap">
+        SELECT
+            m.*,rm.role_id
+        FROM
+            sys_role_menu rm,
+            sys_menu m
+        WHERE
+            rm.menu_id = m.menu_id
+            AND parent_id = #{parentId}
+            AND rm.role_id = #{roleId}
+            AND is_delete = 0
+            AND m.status = 0
+            AND m.menu_type IN(1,2)
+        ORDER BY order_num
+    </select>
+</mapper>

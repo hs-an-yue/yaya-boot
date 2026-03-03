@@ -1,0 +1,33 @@
+<configuration>
+    <!--
+        日志存放路径
+        ${user.home}: 在不同的操作系统上动态获取用户家目录
+    -->
+    <property name="log.path" value="${user.home}/yaya/log" />
+
+    <!-- 控制台输出配置 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}-[%X{trackId}]- %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!-- 文件输出配置 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 时时日志的名称 -->
+        <file>${log.path}/yaya.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 最终生成日志文件的名称,以天作为基本单元 -->
+            <fileNamePattern>${log.path}/yaya.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 存储60天历史记录 -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}-[%X{trackId}]- %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!-- 日志级别 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

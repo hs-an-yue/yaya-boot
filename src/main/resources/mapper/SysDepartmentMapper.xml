@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yaya.boot.mapper.SysDepartmentMapper">
+
+    <resultMap id="deptTreeMap" type="sysDepartment">
+        <id column="dept_id" property="deptId"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="ancestors" property="ancestors"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="status" property="status"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="remark" property="remark"/>
+        <result column="create_by_id" property="createById"/>
+        <result column="update_by_id" property="updateById"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <association property="sysTenant" javaType="sysTenant">
+            <id column="tenant_id" property="tenantId" />
+            <result column="tenant_name" property="tenantName" />
+            <result column="status" property="status"/>
+            <result column="is_delete" property="isDelete"/>
+            <result column="remark" property="remark"/>
+            <result column="create_by_id" property="createById"/>
+            <result column="update_by_id" property="updateById"/>
+            <result column="create_time" property="createTime"/>
+            <result column="update_time" property="updateTime"/>
+        </association>
+        <collection property="children" ofType="sysDepartment" column="{tenantId=tenant_id,parentId=dept_id,status=status}" select="com.yaya.boot.mapper.SysDepartmentMapper.getSubSysDepartmentTree"/>
+    </resultMap>
+
+    <select id="getSysDepartmentTree" resultMap="deptTreeMap">
+        SELECT d.*,t.* FROM sys_department d,sys_tenant t
+        <where>
+            d.tenant_id=t.tenant_id
+            AND d.parent_id='0'
+            AND d.is_delete=0
+            <if test="tenantId!=null and tenantId!=''">
+                AND d.tenant_id=#{tenantId}
+            </if>
+            <if test="status!=null">
+                AND d.`status`=#{status}
+            </if>
+            <if test="deptName!=null and deptName!=''">
+                AND d.`dept_name` LIKE CONCAT('%',#{deptName},'%')
+            </if>
+            ORDER BY d.create_time ASC
+        </where>
+    </select>
+
+    <select id="getSubSysDepartmentTree" resultMap="deptTreeMap">
+        SELECT d.*,t.* FROM sys_department d,sys_tenant t
+        <where>
+            d.tenant_id=t.tenant_id
+            AND d.is_delete=0
+            <if test="parentId!=null and parentId!=''">
+                AND d.parent_id=#{parentId}
+            </if>
+            <if test="tenantId!=null and tenantId!=''">
+                AND d.tenant_id=#{tenantId}
+            </if>
+            <if test="status!=null">
+                AND d.`status`=#{status}
+            </if>
+            ORDER BY d.create_time ASC
+        </where>
+    </select>
+    
+    <select id="getSpecifiedDeptIdAndDeptInfoAndDescendantsDeptListInfo" resultType="sysDepartment">
+        SELECT * FROM sys_department WHERE (dept_id=#{deptId} OR FIND_IN_SET(#{deptId}, ancestors)) AND is_delete=0
+    </select>
+</mapper>
