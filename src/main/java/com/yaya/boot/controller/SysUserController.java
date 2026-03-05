@@ -145,6 +145,21 @@ public class SysUserController {
         return Result.ok();
     }
 
+    @Operation(summary = "用户-修改密码")
+    @Parameters(value = {
+        @Parameter(name = "userId",description = "用户ID",required = true),
+        @Parameter(name = "oldPassword",description = "原密码",required = true),
+        @Parameter(name = "newPassword",description = "新密码",required = true),
+        @Parameter(name = "repeatPassword",description = "重复新密码",required = true)
+    })
+    @PostMapping(value = "/changePassword")
+    public Result changePassword(@RequestParam(value = "userId") String userId,
+                                 @RequestParam(value = "oldPassword") String oldPassword,
+                                 @RequestParam(value = "newPassword") String newPassword,
+                                 @RequestParam(value = "repeatPassword") String repeatPassword){
+        sysUserService.changePassword(userId,oldPassword,newPassword,repeatPassword);
+        return Result.ok();
+    }
 
     @Operation(summary = "用户-详情")
     @Parameters(value = {

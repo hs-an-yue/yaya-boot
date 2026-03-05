@@ -57,6 +57,15 @@ public interface SysUserService {
     void updateSysUser(SysUser sysUser);
 
     /**
+     * 修改密码
+     * @param userId            用户ID
+     * @param oldPassword       原密码
+     * @param newPassword       新密码
+     * @param repeatPassword    重复密码
+     */
+    void changePassword(String userId,String oldPassword, String newPassword, String repeatPassword);
+
+    /**
      * @param userId 用户ID
      * @return 详情
      */

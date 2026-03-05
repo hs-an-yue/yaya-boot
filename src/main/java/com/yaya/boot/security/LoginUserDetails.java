@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -85,7 +86,11 @@ public class LoginUserDetails implements UserDetails {
      */
     @Override
     public boolean isAccountNonExpired() {
-        return sysUser.getIsAccountNonExpired() == 0;
+        //获取过期时间
+        LocalDateTime expiredTime = sysUser.getExpiredTime();
+        //当前时间
+        LocalDateTime now = LocalDateTime.now();
+        return !expiredTime.isBefore(now); // 是否过期
     }
 
     /**

@@ -41,8 +41,7 @@ public class SysDepartmentServiceImpl implements SysDepartmentService {
         List<Map<String, Object>> maps = sysDepartmentMapper.selectMaps(new QueryWrapper<SysDepartment>()
                 .select("MAX(order_num) AS order_num")
                 .eq("tenant_id",tenantId)
-                .eq("is_delete",0)
-                .eq("parent_id",parentId==null || parentId.equals("0")?0:parentId)
+                .eq("parent_id",parentId==null || parentId.equals("0")?"0":parentId)
         );
         if(!maps.isEmpty() && maps.getFirst()!=null && maps.getFirst().get("order_num")!=null){
             int orderNum = Integer.parseInt(maps.getFirst().get("order_num").toString());
@@ -70,7 +69,6 @@ public class SysDepartmentServiceImpl implements SysDepartmentService {
         //判断是否存在未删除的子部门
         List<SysDepartment> subDepartments = sysDepartmentMapper.selectList(new QueryWrapper<SysDepartment>()
                 .eq("parent_id", deptId)
-                .eq("is_delete", 0)//未删除
         );
         if(CollectionUtils.isNotEmpty(subDepartments)){
             throw new GlobalCommonException("部门下存在有效的子部门,不能删除");
@@ -83,7 +81,6 @@ public class SysDepartmentServiceImpl implements SysDepartmentService {
             List<String> deptIdList = deptListInfo.stream().map(SysDepartment::getDeptId).toList();
             if(CollectionUtils.isNotEmpty(deptIdList)){
                 List<SysUser> sysUsers = sysUserMapper.selectList(new QueryWrapper<SysUser>()
-                        .eq("is_delete", 0)
                         .in("dept_id", deptIdList)
                 );
                 //部门下存在有效用户,不能删除
@@ -92,12 +89,8 @@ public class SysDepartmentServiceImpl implements SysDepartmentService {
                 }
             }
         }
-
-        SysDepartment sysDepartment = new SysDepartment();
-        sysDepartment.setDeptId(deptId);
-        sysDepartment.setIsDelete(1);//删除
-        sysDepartment.setUpdateById(SecurityUtils.getUserId());//更新人
-        sysDepartmentMapper.updateById(sysDepartment);
+        //删除
+        sysDepartmentMapper.deleteById(deptId);
     }
 
     @Override
@@ -110,7 +103,6 @@ public class SysDepartmentServiceImpl implements SysDepartmentService {
         deptIds.forEach(deptId -> {
             List<SysDepartment> departments = sysDepartmentMapper.selectList(new QueryWrapper<SysDepartment>()
                     .eq("parent_id", deptId)
-                    .eq("is_delete", 0)//有效子节点
             );
             if(CollectionUtils.isNotEmpty(departments)){
                 throw new GlobalCommonException("部门下存在未删除的子部门");
@@ -123,7 +115,6 @@ public class SysDepartmentServiceImpl implements SysDepartmentService {
                 List<String> deptIdList = deptListInfo.stream().map(SysDepartment::getDeptId).toList();
                 if(CollectionUtils.isNotEmpty(deptIdList)){
                     List<SysUser> sysUsers = sysUserMapper.selectList(new QueryWrapper<SysUser>()
-                            .eq("is_delete", 0)
                             .in("dept_id", deptIdList)
                     );
                     //部门下存在有效用户,不能删除
@@ -133,11 +124,7 @@ public class SysDepartmentServiceImpl implements SysDepartmentService {
                 }
             }
             //删除
-            SysDepartment sysDepartment = new SysDepartment();
-            sysDepartment.setDeptId(deptId);
-            sysDepartment.setIsDelete(1);//删除
-            sysDepartment.setUpdateById(SecurityUtils.getUserId());//更新人
-            sysDepartmentMapper.updateById(sysDepartment);
+            sysDepartmentMapper.deleteById(deptId);
         });
 
     }

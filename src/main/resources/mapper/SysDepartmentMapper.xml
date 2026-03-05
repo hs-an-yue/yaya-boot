@@ -12,7 +12,6 @@
         <result column="ancestors" property="ancestors"/>
         <result column="order_num" property="orderNum"/>
         <result column="status" property="status"/>
-        <result column="is_delete" property="isDelete"/>
         <result column="remark" property="remark"/>
         <result column="create_by_id" property="createById"/>
         <result column="update_by_id" property="updateById"/>
@@ -22,7 +21,6 @@
             <id column="tenant_id" property="tenantId" />
             <result column="tenant_name" property="tenantName" />
             <result column="status" property="status"/>
-            <result column="is_delete" property="isDelete"/>
             <result column="remark" property="remark"/>
             <result column="create_by_id" property="createById"/>
             <result column="update_by_id" property="updateById"/>
@@ -37,7 +35,6 @@
         <where>
             d.tenant_id=t.tenant_id
             AND d.parent_id='0'
-            AND d.is_delete=0
             <if test="tenantId!=null and tenantId!=''">
                 AND d.tenant_id=#{tenantId}
             </if>
@@ -55,7 +52,6 @@
         SELECT d.*,t.* FROM sys_department d,sys_tenant t
         <where>
             d.tenant_id=t.tenant_id
-            AND d.is_delete=0
             <if test="parentId!=null and parentId!=''">
                 AND d.parent_id=#{parentId}
             </if>
@@ -70,6 +66,6 @@
     </select>
     
     <select id="getSpecifiedDeptIdAndDeptInfoAndDescendantsDeptListInfo" resultType="sysDepartment">
-        SELECT * FROM sys_department WHERE (dept_id=#{deptId} OR FIND_IN_SET(#{deptId}, ancestors)) AND is_delete=0
+        SELECT * FROM sys_department WHERE (dept_id=#{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
     </select>
 </mapper>

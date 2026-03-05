@@ -44,16 +44,11 @@ public class SysRoleServiceImpl implements SysRoleService {
         //是否被用户使用
         List<SysUser> sysUsers = sysUserMapper.selectList(new QueryWrapper<SysUser>()
                 .eq("role_id", roleId)
-                .eq("is_delete", 0)
         );
         if(CollectionUtils.isNotEmpty(sysUsers)){
             throw new GlobalCommonException("当前角色被用户引用,不能删除");
         }
-        SysRole sysRole = new SysRole();
-        sysRole.setRoleId(roleId);
-        sysRole.setIsDelete(1);//删除
-        sysRole.setUpdateById(SecurityUtils.getUserId());
-        sysRoleMapper.updateById(sysRole);
+        sysRoleMapper.deleteById(roleId);
     }
 
     @Override
@@ -66,16 +61,12 @@ public class SysRoleServiceImpl implements SysRoleService {
             //是否被用户使用
             List<SysUser> sysUsers = sysUserMapper.selectList(new QueryWrapper<SysUser>()
                     .eq("role_id", roleId)
-                    .eq("is_delete", 0)
             );
             if(CollectionUtils.isNotEmpty(sysUsers)){
                 throw new GlobalCommonException("当前角色["+sysRole_.getRoleName()+"]被用户引用,不能删除");
             }
-            SysRole sysRole = new SysRole();
-            sysRole.setRoleId(roleId);
-            sysRole.setIsDelete(1);//删除
-            sysRole.setUpdateById(SecurityUtils.getUserId());
-            sysRoleMapper.updateById(sysRole);
+            //删除
+            sysRoleMapper.deleteById(roleId);
         });
     }
 
@@ -94,7 +85,6 @@ public class SysRoleServiceImpl implements SysRoleService {
     public List<SysRole> getSysRoleListByTenantId(String tenantId) {
         return sysRoleMapper.selectList(new QueryWrapper<SysRole>()
                 .eq(StringUtils.isNotEmpty(tenantId),"tenant_id", tenantId)
-                .eq("is_delete", 0)
                 .eq("`status`", 0)
                 .orderByAsc("create_time")
         );
@@ -108,7 +98,6 @@ public class SysRoleServiceImpl implements SysRoleService {
                 .like(StringUtils.isNotEmpty(roleSymbol), "role_symbol", roleSymbol)
                 .eq(status != null, "`status`", status)
                 .eq(StringUtils.isNotEmpty(tenantId), "`tenant_id`", tenantId)
-                .eq("`is_delete`", 0)//未删除的租户
                 .ge(startTime != null, "create_time", startTime)
                 .le(endTime != null, "create_time", endTime)
                 .orderByDesc("update_time")

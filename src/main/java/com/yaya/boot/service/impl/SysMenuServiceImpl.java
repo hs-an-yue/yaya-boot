@@ -2,8 +2,10 @@ package com.yaya.boot.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yaya.boot.entity.SysMenu;
+import com.yaya.boot.entity.SysRoleMenu;
 import com.yaya.boot.exception.GlobalCommonException;
 import com.yaya.boot.mapper.SysMenuMapper;
+import com.yaya.boot.mapper.SysRoleMenuMapper;
 import com.yaya.boot.service.SysMenuService;
 import com.yaya.boot.utils.SecurityUtils;
 import jakarta.annotation.Resource;
@@ -21,6 +23,8 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Resource
     private SysMenuMapper sysMenuMapper;
+    @Resource
+    private SysRoleMenuMapper sysRoleMenuMapper;
 
     @Override
     public void addSysMenu(SysMenu sysMenu) {
@@ -91,17 +95,20 @@ public class SysMenuServiceImpl implements SysMenuService {
     public void deleteSysMenu(String menuId) {
         //查询是否存在有效子节点
         List<SysMenu> sysMenus = sysMenuMapper.selectList(new QueryWrapper<SysMenu>()
-                .eq("is_delete", 0)
                 .eq("parent_id", menuId)
         );
         if(CollectionUtils.isNotEmpty(sysMenus)){
             throw new GlobalCommonException("存在有效子节点,不能删除");
         }
-        SysMenu sysMenu = new SysMenu();
-        sysMenu.setMenuId(menuId);
-        sysMenu.setIsDelete(1);//删除
-        sysMenu.setUpdateById(SecurityUtils.getUserId());
-        sysMenuMapper.updateById(sysMenu);
+        //是否被授权
+        List<SysRoleMenu> roleMenus = sysRoleMenuMapper.selectList(new QueryWrapper<SysRoleMenu>()
+                .eq("menu_id", menuId)
+        );
+        if(CollectionUtils.isNotEmpty(roleMenus)){
+            throw new GlobalCommonException("当前菜单已授权,不能删除");
+        }
+        //删除
+        sysMenuMapper.deleteById(menuId);
     }
 
     @Override
@@ -135,7 +142,8 @@ public class SysMenuServiceImpl implements SysMenuService {
         //是否是管理者，管理者包括 平台管理员admin和平台运营管理员operation
         Boolean manager = SecurityUtils.isAdminOrOperation();
         if(manager){
-            return sysMenuMapper.getSysMenuTreeExcludeButton();
+            List<SysMenu> sysMenus = sysMenuMapper.getAuthSysMenuByRoleId(roleId);
+            return CollectionUtils.isEmpty(sysMenus)?sysMenuMapper.getSysMenuTreeExcludeButton():sysMenus;
         }else {
             return sysMenuMapper.getAuthSysMenuByRoleId(roleId);
         }

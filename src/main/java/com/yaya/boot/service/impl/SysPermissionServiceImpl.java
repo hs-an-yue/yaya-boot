@@ -5,10 +5,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yaya.boot.dto.Page;
 import com.yaya.boot.entity.SysPermission;
+import com.yaya.boot.entity.SysRolePermission;
+import com.yaya.boot.exception.GlobalCommonException;
 import com.yaya.boot.mapper.SysPermissionMapper;
+import com.yaya.boot.mapper.SysRolePermissionMapper;
 import com.yaya.boot.service.SysPermissionService;
 import com.yaya.boot.utils.SecurityUtils;
 import jakarta.annotation.Resource;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +26,8 @@ public class SysPermissionServiceImpl implements SysPermissionService {
 
     @Resource
     private SysPermissionMapper sysPermissionMapper;
+    @Resource
+    private SysRolePermissionMapper sysRolePermissionMapper;
 
     @Override
     public void addSysPermission(SysPermission sysPermission) {
@@ -32,11 +38,13 @@ public class SysPermissionServiceImpl implements SysPermissionService {
 
     @Override
     public void deleteSysPermission(String permissionId) {
-        SysPermission sysPermission = new SysPermission();
-        sysPermission.setPermissionId(permissionId);
-        sysPermission.setIsDelete(1);//删除
-        sysPermission.setUpdateById(SecurityUtils.getUserId());
-        sysPermissionMapper.updateById(sysPermission);
+        List<SysRolePermission> rolePermissions = sysRolePermissionMapper.selectList(new QueryWrapper<SysRolePermission>()
+                .eq("permission_id", permissionId)
+        );
+        if(CollectionUtils.isNotEmpty(rolePermissions)){
+            throw new GlobalCommonException("权限被角色关联,不能删除");
+        }
+        sysPermissionMapper.deleteById(permissionId);
     }
 
     @Override
@@ -57,7 +65,6 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                 .like(StringUtils.isNotEmpty(permissionName), "permission_name", permissionName)
                 .like(StringUtils.isNotEmpty(permissionSymbol), "permission_symbol", permissionSymbol)
                 .eq(status != null, "`status`", status)
-                .eq("`is_delete`", 0)//未删除的租户
                 .ge(startTime != null, "create_time", startTime)
                 .le(endTime != null, "create_time", endTime)
                 .orderByDesc("update_time")

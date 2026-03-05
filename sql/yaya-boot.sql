@@ -7,7 +7,6 @@ USE `yaya-boot`;
 CREATE TABLE `sys_tenant` (
     `tenant_id`               VARCHAR(100)    PRIMARY KEY    		            COMMENT '租户ID,主键',
     `tenant_name`             VARCHAR(255)    NOT NULL                          COMMENT '租户名称',
-    `is_delete`               TINYINT(1)      DEFAULT 0                         COMMENT '是否删除 1:删除 0:未删除',
     `status`                  TINYINT(1)      NOT NULL DEFAULT 0                COMMENT '是否禁用 1:是 0:否',
     `remark`                  VARCHAR(255)    DEFAULT NULL                      COMMENT '备注',
     `create_by_id`            VARCHAR(100)                                      COMMENT '创建人ID,关联用户表(sys_user)主键',
@@ -27,7 +26,6 @@ CREATE TABLE `sys_department`(
     `parent_id`                     VARCHAR(100)    DEFAULT 0                       COMMENT '父ID,自关联部门表主键',
     `ancestors`                     VARCHAR(100)                                    COMMENT '祖宗ID列表,用逗号(,)分割,所有部门的祖宗ID都从最顶部开始,从0开始',
     `order_num`                     INT             DEFAULT 0                       COMMENT '排序序号',
-    `is_delete`                     TINYINT(1)      DEFAULT 0                       COMMENT '是否删除 1:删除 0:未删除',
     `status`                        TINYINT(1)      NOT NULL 	DEFAULT 0           COMMENT '是否禁用 1:是 0:否',
 	`remark`            			VARCHAR(255)    DEFAULT NULL                    COMMENT '备注',
     `create_by_id`                  VARCHAR(100)                                    COMMENT '创建人ID,关联用户表(sys_user)主键',
@@ -48,7 +46,6 @@ CREATE TABLE `sys_role` (
     `role_name`         VARCHAR(100)    NOT NULL                        COMMENT '角色名',
     `role_symbol`       VARCHAR(100)    NOT NULL                        COMMENT '角色符号',
     `tenant_id`         VARCHAR(100)    NOT NULL    		            COMMENT '租户ID',
-    `is_delete`         TINYINT(1)      DEFAULT 0                       COMMENT '是否删除 1:删除 0:未删除',
     `status`            TINYINT(1)      NOT NULL 		DEFAULT 0       COMMENT '是否禁用 1:是 0:否',
     `remark`            VARCHAR(255)    DEFAULT NULL                    COMMENT '备注',
     `create_by_id`      VARCHAR(100)                                    COMMENT '创建人ID,关联用户表(sys_user)主键',
@@ -73,9 +70,7 @@ CREATE TABLE `sys_user`(
     `password`                    VARCHAR(255)    NOT NULL                        COMMENT '密码',
     `sex`                         TINYINT(1)      DEFAULT 1                       COMMENT '性别 男:1,女:0',
     `avatar`                      VARCHAR(255)    DEFAULT 'file/avatar.png'       COMMENT '头像地址',
-    `is_account_non_expired`      TINYINT(1)      DEFAULT 0                       COMMENT '账号是否过期 1:过期 0:未过期',
     `is_enabled`                  TINYINT(1)      DEFAULT 1                       COMMENT '账号是否可用 1:可用 0:不可用',
-    `is_delete`                   TINYINT(1)      DEFAULT 0                       COMMENT '是否删除 1:删除 0:未删除',
 	`remark`            		  VARCHAR(255)    DEFAULT NULL                    COMMENT '备注',
     `create_by_id`                VARCHAR(100)                                    COMMENT '创建人ID,关联用户表(user)主键',
     `update_by_id`                VARCHAR(100)                                    COMMENT '更新人ID,关联用户表(user)主键',
@@ -97,7 +92,6 @@ CREATE TABLE `sys_permission` (
     `permission_name`       VARCHAR(100)    NOT NULL                        COMMENT '权限名',
     `permission_symbol`     VARCHAR(100)    NOT NULL                        COMMENT '权限符号',
     `tenant_id`             VARCHAR(100)    NOT NULL    		            COMMENT '租户ID',
-    `is_delete`             TINYINT(1)      DEFAULT 0                       COMMENT '是否删除 1:删除 0:未删除',
     `status`                TINYINT(1)      NOT NULL DEFAULT 0              COMMENT '是否禁用 1:是 0:否',
     `remark`                VARCHAR(255)    DEFAULT NULL                    COMMENT '备注',
     `create_by_id`          VARCHAR(100)                                    COMMENT '创建人ID,关联用户表(sys_user)主键',
@@ -125,7 +119,6 @@ CREATE TABLE `sys_menu` (
     `parent_id`       VARCHAR(100)    NOT NULL DEFAULT 0              COMMENT '父ID,最顶层从0开始',
     `order_num`       INT             DEFAULT 1                       COMMENT '排序序号,从1开始',
     `status`          INT             NOT NULL DEFAULT 0              COMMENT '是否禁用 1:是 0:否',
-    `is_delete`       TINYINT(1)      DEFAULT 0                       COMMENT '是否删除 1:删除 0:未删除',
     `create_by_id`    VARCHAR(100)                                    COMMENT '创建人ID,关联用户表(sys_user)主键',
     `update_by_id`    VARCHAR(100)                                    COMMENT '更新人ID,关联用户表(sys_user)主键',
     `create_time`     DATETIME        DEFAULT NOW()                   COMMENT '创建时间',
@@ -183,3 +176,25 @@ CREATE TABLE `sys_file` (
 -- 添加索引
 ALTER TABLE `sys_file` ADD INDEX file_name_index (`file_name`);
 ALTER TABLE `sys_file` ADD INDEX tenant_id_index (`tenant_id`);
+
+-- 公告表
+CREATE TABLE `sys_notice` (
+    `notice_id`             VARCHAR(100)    PRIMARY KEY    					            COMMENT '公告ID,主键',
+    `notice_title`          VARCHAR(100)    NOT NULL    		                        COMMENT '公告标题',
+    `notice_content`        LONGTEXT        NOT NULL                                    COMMENT '公告内容,可以是文字，图片，视频，音频，表格等多媒体内容',
+    `notice_level`          TINYINT(1)      NOT NULL                                    COMMENT '公告级别: 0-普通, 1-重要, 2-紧急',
+    `notice_type`           TINYINT(1)      NOT NULL                                    COMMENT '公告类型: 1-通知, 2-新闻, 3-活动, 4-公示',
+    `publish_user_id`       VARCHAR(100)    NOT NULL                                    COMMENT '发布人ID',
+    `is_top`                TINYINT(1)      NOT NULL    DEFAULT '0'                     COMMENT '是否置顶: 0-否, 1-是',
+    `create_time`           DATETIME        DEFAULT NOW()                               COMMENT '上传时间',
+    `update_time`           TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '设置当前时间，并且自动更新时间'
+)CHARACTER SET=utf8mb4 COMMENT='公告表';
+
+-- 公告用户关联表
+CREATE TABLE `sys_notice_user` (
+    `notice_id`         VARCHAR(100)          NOT NULL                                  COMMENT '公告ID',
+    `user_id`           VARCHAR(100)          NOT NULL                                  COMMENT '用户ID',
+    `read_time`         DATETIME              DEFAULT NULL                              COMMENT '阅读时间',
+    `status`            TINYINT(1)            NOT NULL    DEFAULT '0'                   COMMENT '阅读状态: 0-未阅读, 1-已阅读',
+    PRIMARY KEY (`notice_id`,`user_id`)
+)CHARACTER SET=utf8mb4 COMMENT='公告用户关联表';

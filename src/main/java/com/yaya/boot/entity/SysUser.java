@@ -58,10 +58,6 @@ public class SysUser implements Serializable {
     @TableField(value = "avatar")
     private String avatar;
 
-    @Schema(description = "账号是否过期 1:过期 0:未过期")
-    @TableField(value = "is_account_non_expired")
-    private Integer isAccountNonExpired;
-
     @Schema(description = "账号是否可用 1:可用 0:不可用")
     @TableField(value = "is_enabled")
     private Integer isEnabled;
@@ -70,10 +66,6 @@ public class SysUser implements Serializable {
     @TableField(value = "expired_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private LocalDateTime expiredTime;
-
-    @Schema(description = "是否删除 1:删除 0:未删除")
-    @TableField(value = "is_delete")
-    private Integer isDelete;
 
     @Schema(description = "备注")
     @TableField(value = "remark")

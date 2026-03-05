@@ -60,10 +60,6 @@ public class SysMenu  implements Serializable {
     @TableField(value = "`status`")
     private Integer status;
 
-    @Schema(description = "是否删除 1:删除 0:未删除")
-    @TableField(value = "is_delete")
-    private Integer isDelete;
-
     @Schema(description = "创建人ID")
     @TableField(value = "create_by_id")
     private String createById;

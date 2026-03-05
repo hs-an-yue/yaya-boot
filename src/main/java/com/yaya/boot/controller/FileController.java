@@ -56,7 +56,7 @@ public class FileController {
      */
     @Operation(summary = "头像上传")
     @PostMapping(value = "/uploadAvatar")
-    public Result uploadAvatar(@RequestParam(value = "file",required = true) MultipartFile file) throws IOException {
+    public Result uploadAvatar(@RequestParam(value = "file") MultipartFile file) throws IOException {
         //获取文件名
         String filename = file.getOriginalFilename();
         //获取文件后缀
@@ -89,9 +89,9 @@ public class FileController {
                 //文件保存的位置
                 LocalDate now = LocalDate.now();
                 //拼接生成
-                String pinJoin="/file/avatar/"+now.getYear()+"/"+now.getMonthValue()+"/"+now.getDayOfMonth();
+                String pinJoin="file/avatar/"+now.getYear()+"/"+now.getMonthValue()+"/"+now.getDayOfMonth();
                 //本地地址
-                String localFileAddress=yaYaConfig.getPrefix()+pinJoin;
+                String localFileAddress=yaYaConfig.getPrefix()+"/"+pinJoin;
                 //判断文件路径是否存在
                 File f_ = new File(localFileAddress);
                 if(!f_.exists()){
@@ -165,9 +165,9 @@ public class FileController {
                 //地址拼接（基于文件格式和时间）
                 LocalDate now = LocalDate.now();
                 //拼接生成
-                String pinJoin="/file/"+now.getYear()+"/"+now.getMonthValue()+"/"+now.getDayOfMonth()+"/"+sub;
+                String pinJoin="file/"+now.getYear()+"/"+now.getMonthValue()+"/"+now.getDayOfMonth()+"/"+sub;
                 //本地地址
-                String localFileAddress=prefix+pinJoin;
+                String localFileAddress=prefix+"/"+pinJoin;
                 //判断文件路径是否存在
                 File f_ = new File(localFileAddress);
                 if(!f_.exists()){
@@ -210,14 +210,14 @@ public class FileController {
     @Parameters(value = {
         @Parameter(name = "pageNo",description = "当前页",required = true),
         @Parameter(name = "pageSize",description = "页容量",required = true),
-        @Parameter(name = "fileName",description = "文件名",required = false),
-        @Parameter(name = "tenantId",description = "租户ID",required = false),
-        @Parameter(name = "startTime",description = "开始时间",required = false),
-        @Parameter(name = "endTime",description = "结束时间",required = false)
+        @Parameter(name = "fileName",description = "文件名"),
+        @Parameter(name = "tenantId",description = "租户ID"),
+        @Parameter(name = "startTime",description = "开始时间"),
+        @Parameter(name = "endTime",description = "结束时间")
     })
     @GetMapping(value = "/getFilePage")
-    public Result getFilePage(@RequestParam(value = "pageNo",required = true) Integer pageNo,
-                              @RequestParam(value = "pageSize",required = true) Integer pageSize,
+    public Result getFilePage(@RequestParam(value = "pageNo") Integer pageNo,
+                              @RequestParam(value = "pageSize") Integer pageSize,
                               @RequestParam(value = "fileName",required = false) String fileName,
                               @RequestParam(value = "tenantId",required = false) Long tenantId,
                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam(value = "endTime",required = false) LocalDateTime startTime,

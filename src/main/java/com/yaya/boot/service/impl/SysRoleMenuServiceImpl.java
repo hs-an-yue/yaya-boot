@@ -55,7 +55,6 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
             menuIds.forEach(menuId -> {
                 List<SysMenu> sysMenus = sysMenuMapper.selectList(new QueryWrapper<SysMenu>()
                         .eq("parent_id", menuId)
-                        .eq("is_delete", 0)
                 );
                 //如果为空，说明没有子节点
                 if(CollectionUtils.isEmpty(sysMenus)){

@@ -48,6 +48,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         SysUser user = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("phone", username));
         if(null==user){
             throw new UsernameNotFoundException("用户名或密码错误");

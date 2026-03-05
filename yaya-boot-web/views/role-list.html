@@ -36,6 +36,9 @@
         .layui-select-title>.layui-input{
             height: 34.4px;
         }
+        .layui-layer-title{
+            border-bottom: unset;
+        }
     </style>
 </head>
 <body>
@@ -126,7 +129,7 @@
             table.on('tool(table-role)', function(obj){
                 //事件
                 let event = obj.event;
-                if(event==='del'){//删除事件
+                if(event==='del'){ //删除事件
                     layer.confirm('确定删除吗？', function(index){
                         layer.close(index);//关闭弹窗
                         // 向后端发送删除请求，执行完毕后，可通过 reloadData 方法完成数据重载
@@ -153,7 +156,7 @@
                             }
                         });
                     });
-                }else if(event==='edit'){//编辑事件
+                }else if(event==='edit'){ //编辑事件
                     layer.open({
                         type: 2, // page 层类型 iframe
                         area: ['410px', '330px'],
@@ -172,6 +175,19 @@
                             body.find('input[name="roleName"]').val(obj.data.roleName);
                             body.find('input[name="roleSymbol"]').val(obj.data.roleSymbol);
                             body.find('input[name="remark"]').val(obj.data.remark);
+                        }
+                    });
+                }else if(event==='auth-menu'){ //菜单授权事件
+                    layer.open({
+                        type: 2, // page 层类型 iframe
+                        area: ['410px', '330px'],
+                        title: '菜单授权',
+                        shade: 0.6, // 遮罩透明度
+                        shadeClose: true, // 点击遮罩区域，关闭弹层
+                        content: `role-auth.html?roleId=${obj.data.roleId}`,
+                        end: function(){
+                            //刷新表格
+                            table.reload('table-role');
                         }
                     });
                 }else{
@@ -330,7 +346,7 @@
                         title: '操作',
                         width:'15%',
                         fixed: 'right',
-                        templet: function(d){
+                        templet: function(){
                             let str='<button class="yaya-btn is-link-primary yaya-btn-small" lay-event="edit">更新</button>';
                             str+='<button class="yaya-btn is-link-danger yaya-btn-small" lay-event="del">删除</button>';
                             str+='<button class="yaya-btn is-link-success yaya-btn-small" lay-event="auth-menu">菜单授权</button>';

@@ -40,10 +40,6 @@ public class SysPermission implements Serializable {
     @TableField(value = "`status`")
     private Integer status;
 
-    @Schema(description = "是否删除 1:删除 0:未删除")
-    @TableField(value = "is_delete")
-    private Integer isDelete;
-
     @Schema(description = "备注")
     @TableField(value = "remark")
     private String remark;

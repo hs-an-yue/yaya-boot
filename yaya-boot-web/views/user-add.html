@@ -54,7 +54,7 @@
                         <input type="text" name="phone" lay-verify="required" lay-reqtext="请输入手机" placeholder="请输入手机" autocomplete="off" lay-affix="clear" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-form-item">
+                <div class="layui-form-item" id="tenantId">
                     <label class="layui-form-label">租户</label>
                     <div class="layui-input-block">
                         <select name="tenantId">
@@ -125,39 +125,6 @@
             const layer = layui.layer;
             const laydate = layui.laydate;
 
-
-
-            //租户下拉框
-            let index = layer.load(0);//开启加载图标
-            $.ajax({
-                url: server_url+'/getSysTenantAll',
-                type:'GET',
-                dataType:'json',
-                headers:{
-                    'Authorization': token
-                },
-                success: function(resp){
-                    //关闭加载图标
-                    layer.close(index);
-                    if(resp.code===0){
-                        let list = resp.data;
-                        let str='<option value="">租户</option>';
-                        if(list && list.length>0){
-                            for (let index = 0; index < list.length; index++) {
-                                str+=`
-                                    <option value="${list[index].tenantId}">${list[index].tenantName}</option>
-                                `;
-                            }
-                        }
-                        //设置到指定位置
-                        $('select[name="tenantId"]').html(str);
-                        //重新渲染
-                        form.render("select");
-                    }else{
-                        layer.msg(resp.msg)
-                    }
-                }
-            });
 
             //角色下拉框
             let index_r = layer.load(0);//开启加载图标
@@ -275,6 +242,80 @@
                 });
                 return false; // 阻止默认 form 跳转
             });
+        
+            
+            //判断当前用户是不是管理员或者运营用户，如果是管理员用户或者运营用户可以进行租户选择，如果不是，不能进行租户选择
+            let yaya = layui.sessionData("yaya");
+            //用户信息
+            let phone = yaya.user.phone;
+            if(phone!=='admin' && phone!=='operation'){
+                //当前用户的租户ID
+                let tenantId = yaya.user.tenantId;
+                $.ajax({
+                    url: server_url+'/getSysTenantAll',
+                    type:'GET',
+                    dataType:'json',
+                    headers:{
+                        'Authorization': token
+                    },
+                    success: function(resp){
+                        if(resp.code===0){
+                            let list = resp.data;
+                            let str='';
+                            if(list && list.length>0){
+                                for (let index = 0; index < list.length; index++) {
+                                    let tId = list[index].tenantId;
+                                    if(tId===tenantId){
+                                        str+=`<option selected value="${tId}">${list[index].tenantName}</option>`;
+                                    }else{
+                                        str+=`<option value="${tId}">${list[index].tenantName}</option>`;
+                                    }
+                                }
+                            }
+                            //设置到指定位置
+                            $('select[name="tenantId"]').html(str);
+                            //隐藏
+                            $("#tenantId").css({display:'none'});
+                            //重新渲染
+                            form.render();
+                        }else{
+                            layer.msg(resp.msg)
+                        }
+                    }
+                });
+            }else{
+                //租户下拉框
+                let index = layer.load(0);//开启加载图标
+                $.ajax({
+                    url: server_url+'/getSysTenantAll',
+                    type:'GET',
+                    dataType:'json',
+                    headers:{
+                        'Authorization': token
+                    },
+                    success: function(resp){
+                        //关闭加载图标
+                        layer.close(index);
+                        if(resp.code===0){
+                            let list = resp.data;
+                            let str='<option value="">租户</option>';
+                            if(list && list.length>0){
+                                for (let index = 0; index < list.length; index++) {
+                                    str+=`
+                                        <option value="${list[index].tenantId}">${list[index].tenantName}</option>
+                                    `;
+                                }
+                            }
+                            //设置到指定位置
+                            $('select[name="tenantId"]').html(str);
+                            //重新渲染
+                            form.render("select");
+                        }else{
+                            layer.msg(resp.msg)
+                        }
+                    }
+                });
+            }
         });
     </script>
 </body>

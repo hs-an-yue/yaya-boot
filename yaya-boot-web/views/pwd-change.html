@@ -7,6 +7,8 @@
     <!-- LayUI css库 -->
     <link rel="stylesheet" href="../layui/css/layui.css">
     <link rel="stylesheet" href="../css/yaya-common.css">
+    <link rel="stylesheet" href="../css/yaya-style-extend.css">
+    <link rel="stylesheet" href="../font/iconfont.css">
     <title>修改密码</title>
 </head>
 <body>
@@ -20,7 +22,7 @@
                                 <div class="layui-input-prefix">
                                     <i class="layui-icon layui-icon-vercode"></i>
                                 </div>
-                                <input type="password" name="password" value="" lay-verify="required" placeholder="请输入原密码..." lay-reqtext="输入原密码" autocomplete="off" class="layui-input" lay-affix="clear">
+                                <input type="password" name="oldPassword" lay-verify="required" placeholder="请输入原密码..." lay-reqtext="输入原密码" autocomplete="off" class="layui-input" lay-affix="eye">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -28,7 +30,7 @@
                                 <div class="layui-input-prefix">
                                     <i class="layui-icon layui-icon-vercode"></i>
                                 </div>
-                                <input type="password" name="new_password"  lay-verify="required" placeholder="请输入新密码" lay-reqtext="输入新密码..." autocomplete="off" class="layui-input" lay-affix="clear">
+                                <input type="password" name="newPassword"  lay-verify="required" placeholder="请输入新密码" lay-reqtext="输入新密码..." autocomplete="off" class="layui-input" lay-affix="eye">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -36,7 +38,7 @@
                                 <div class="layui-input-prefix">
                                     <i class="layui-icon layui-icon-vercode"></i>
                                 </div>
-                                <input type="password" name="repeat_password" lay-verify="required" placeholder="重复新密码..." lay-reqtext="重复新密码" autocomplete="off" class="layui-input" lay-affix="clear">
+                                <input type="password" name="repeatPassword" lay-verify="required" placeholder="重复新密码..." lay-reqtext="重复新密码" autocomplete="off" class="layui-input" lay-affix="eye">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -48,5 +50,40 @@
         </div>
     </div>
     <script src="../layui/layui.js"></script>
+    <script src="../js/server.js"></script>
+    <script>
+        layui.use(function(){
+
+            const $ = layui.$;
+            const form = layui.form;
+            const layer = layui.layer;
+
+            form.on('submit(submitPwd)', function(data){
+                let field = data.field; // 获取表单字段值
+                //设置用户ID
+                field.userId=user.userId;
+                //AJAX请求
+                $.ajax({
+                    type:'post',
+                    url: server_url+'/changePassword',
+                    headers:{
+                        'Authorization': token
+                    },
+                    data:field,
+                    dataType:'json',
+                    success:function(resp){
+                        if(resp.code===0){
+                            //关闭弹窗
+                            let index = parent.layer.getFrameIndex(window.name); // 先得到当前 iframe 层的索引
+                            parent.layer.close(index); // 再执行关闭
+                        }else{
+                            layer.msg(resp.msg);
+                        }
+                    }
+                });
+                return false; // 阻止默认 form 跳转
+            });
+        });
+    </script>
 </body>
 </html>

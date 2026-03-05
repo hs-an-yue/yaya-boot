@@ -5,6 +5,7 @@ import com.yaya.boot.config.YaYaConfig;
 import com.yaya.boot.dto.Result;
 import com.yaya.boot.entity.SysRole;
 import com.yaya.boot.entity.SysTenant;
+import com.yaya.boot.entity.SysUser;
 import com.yaya.boot.exception.GlobalCommonException;
 import com.yaya.boot.security.LoginUserDetails;
 import com.yaya.boot.service.SysRoleService;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -124,21 +126,23 @@ public class LoginController {
             Map<String,Object> map = new HashMap<>();
             map.put("token",token);//令牌
             Map<String,Object> userMap = new HashMap<>();
-            userMap.put("userId",principal.getSysUser().getUserId()); //用户ID
-            userMap.put("avatar",principal.getSysUser().getAvatar());//用户头像
-            userMap.put("phone",principal.getSysUser().getPhone());//用户账号
-            userMap.put("username",principal.getSysUser().getUsername());//用户名称
-            userMap.put("deptId",principal.getSysUser().getDeptId());//用户部门ID
-            String roleId = principal.getSysUser().getRoleId();
-            userMap.put("roleId",roleId);//用户角色ID
-            SysRole role = sysRoleService.getSysRoleByRoleId(roleId);
-            userMap.put("roleName",role.getRoleName());//用户角色名称
-            userMap.put("roleSymbol",role.getRoleSymbol());//用户角色符号
-            SysTenant sysTenant = principal.getSysUser().getSysTenant();
+            //登录的用户信息
+            SysUser sysUser = principal.getSysUser();
+            userMap.put("userId",sysUser.getUserId()); //用户ID
+            userMap.put("avatar",sysUser.getAvatar());//用户头像
+            userMap.put("phone",sysUser.getPhone());//用户账号
+            userMap.put("username",sysUser.getUsername());//用户名称
+            userMap.put("deptId",sysUser.getDeptId());//用户部门ID
+            userMap.put("deptName",sysUser.getSysDepartment().getDeptName());//用户部门名称
+            userMap.put("roleId",sysUser.getRoleId());//用户角色ID
+            userMap.put("roleName",sysUser.getSysRole().getRoleName());//用户角色名称
+            userMap.put("roleSymbol",sysUser.getSysRole().getRoleSymbol());//用户角色符号
+            SysTenant sysTenant = sysUser.getSysTenant();
             userMap.put("tenantId",sysTenant.getTenantId());//租户ID
             userMap.put("tenantName",sysTenant.getTenantName());//租户名称
-            userMap.put("sex",principal.getSysUser().getSex());//用户性别
-            userMap.put("email",principal.getSysUser().getEmail());//用户邮箱
+            userMap.put("sex",sysUser.getSex()==1?"男":"女");//用户性别
+            userMap.put("email",sysUser.getEmail());//用户邮箱
+            userMap.put("createTime",sysUser.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));//创建时间
             map.put("user",userMap);
             return Result.ok(map);
         }catch (RuntimeException e){

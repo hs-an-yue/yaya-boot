@@ -101,11 +101,6 @@ public class SysUserServiceImpl implements SysUserService {
                 sysUser.setExpiredTime(expiredTime);
                 //账号是否过期(如果过期时间已经过期,那么标记账号过期,如果过期时间还没有过期,标记账号未过期)
                 LocalDateTime now = LocalDateTime.now();
-                if(now.isBefore(expiredTime)){//当前在过期时间前面(举例 过期为2026-10-10 当前时间为 2026-10-09 那么账号未过期)
-                    sysUser.setIsAccountNonExpired(0);//账号是否过期 1:过期 0:未过期
-                }else {
-                    sysUser.setIsAccountNonExpired(1);//账号是否过期 1:过期 0:未过期
-                }
                 //租户角色校验(当前角色ID是否属于当前租户下的角色)
                 SysRole sysRole = sysRoleMapper.selectById(roleId);
                 if(sysRole==null){
@@ -125,7 +120,6 @@ public class SysUserServiceImpl implements SysUserService {
                 sysUserMapper.insert(sysUser);
             }else { //已存在,判断是否覆盖,还是忽略
                 if(cover==1){//覆盖(更新操作)
-                    System.out.println("覆盖:"+sysUser);
                     sysUser.setCreateById(SecurityUtils.getUserId());
                     sysUser.setUpdateById(SecurityUtils.getUserId());
                     sysUser.setDeptId(userExcel.getDeptId());
@@ -149,11 +143,6 @@ public class SysUserServiceImpl implements SysUserService {
                     sysUser.setExpiredTime(expiredTime);
                     //账号是否过期(如果过期时间已经过期,那么标记账号过期,如果过期时间还没有过期,标记账号未过期)
                     LocalDateTime now = LocalDateTime.now();
-                    if(now.isBefore(expiredTime)){//当前在过期时间前面(举例 过期为2026-10-10 当前时间为 2026-10-09 那么账号未过期)
-                        sysUser.setIsAccountNonExpired(0);//账号是否过期 1:过期 0:未过期
-                    }else {
-                        sysUser.setIsAccountNonExpired(1);//账号是否过期 1:过期 0:未过期
-                    }
                     //租户角色校验(当前角色ID是否属于当前租户下的角色)
                     SysRole sysRole = sysRoleMapper.selectById(roleId);
                     if(sysRole==null){
@@ -178,11 +167,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public void deleteSysUser(String userId) {
-        SysUser sysUser =  new SysUser();
-        sysUser.setUserId(userId);
-        sysUser.setIsDelete(1);//删除
-        sysUser.setUpdateById(SecurityUtils.getUserId());
-        sysUserMapper.updateById(sysUser);
+        sysUserMapper.deleteById(userId);
     }
 
     @Override
@@ -196,9 +181,8 @@ public class SysUserServiceImpl implements SysUserService {
                 if(sysUser.getPhone().equals("admin") || sysUser.getPhone().equals("operation")){
                     throw new GlobalCommonException("系统自带管理员账户或者运营账户不能被删除");
                 }else {
-                    sysUser.setIsDelete(1);//删除
-                    sysUser.setUpdateById(SecurityUtils.getUserId());
-                    sysUserMapper.updateById(sysUser);
+                    //删除
+                    sysUserMapper.deleteById(userId);
                 }
             }
         });
@@ -253,6 +237,24 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    public void changePassword(String userId,String oldPassword, String newPassword, String repeatPassword) {
+        if(!newPassword.equals(repeatPassword)){
+            throw new GlobalCommonException("两次输入的新密码不相同");
+        }
+        //查询用户
+        SysUser sysUser = sysUserMapper.selectById(userId);
+        //用户加密后的原密码
+        String password = sysUser.getPassword();
+        boolean matches = passwordEncoder.matches(oldPassword, password);
+        if(!matches){
+            throw new GlobalCommonException("原密码输入错误");
+        }
+        String encode_new = passwordEncoder.encode(newPassword);
+        sysUser.setPassword(encode_new);//更新密码
+        sysUserMapper.updateById(sysUser);
+    }
+
+    @Override
     public SysUser getSysUser(String userId) {
         SysUser sysUser = sysUserMapper.selectById(userId);
         if (sysUser != null) {
@@ -287,7 +289,6 @@ public class SysUserServiceImpl implements SysUserService {
                 .in(!CollectionUtils.isEmpty(dIds),"dept_id",dIds.stream().distinct().toList())
                 .eq(sex != null, "`sex`", sex)
                 .eq(isEnabled != null, "`is_enabled`", isEnabled)
-                .eq("`is_delete`", 0)//未删除的租户
                 .ge(startTime != null, "create_time", startTime)
                 .le(endTime != null, "create_time", endTime)
                 .orderByAsc("create_time")

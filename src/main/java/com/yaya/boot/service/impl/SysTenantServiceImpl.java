@@ -47,25 +47,22 @@ public class SysTenantServiceImpl implements SysTenantService {
     @Override
     public void deleteSysTenant(String tenantId) {
         //关联角色不能删除
-        List<SysRole> sysRoles = sysRoleMapper.selectList(new QueryWrapper<SysRole>().eq("tenant_id", tenantId).eq("is_delete", 0));
+        List<SysRole> sysRoles = sysRoleMapper.selectList(new QueryWrapper<SysRole>().eq("tenant_id", tenantId));
         if(CollectionUtils.isNotEmpty(sysRoles)) {
             throw new GlobalCommonException("租户下存在有效角色,不能删除");
         }
         //关联部门不能删除
-        List<SysDepartment> departments = sysDepartmentMapper.selectList(new QueryWrapper<SysDepartment>().eq("tenant_id", tenantId).eq("is_delete", 0));
+        List<SysDepartment> departments = sysDepartmentMapper.selectList(new QueryWrapper<SysDepartment>().eq("tenant_id", tenantId));
         if(CollectionUtils.isNotEmpty(departments)) {
             throw new GlobalCommonException("租户下存在有效部门,不能删除");
         }
         //关联用户不能删除
-        List<SysUser> sysUsers = sysUserMapper.selectList(new QueryWrapper<SysUser>().eq("tenant_id", tenantId).eq("is_delete", 0));
+        List<SysUser> sysUsers = sysUserMapper.selectList(new QueryWrapper<SysUser>().eq("tenant_id", tenantId));
         if(CollectionUtils.isNotEmpty(sysUsers)) {
             throw new GlobalCommonException("租户下存在有效用户,不能删除");
         }
-        SysTenant sysTenant = new SysTenant();
-        sysTenant.setTenantId(tenantId);
-        sysTenant.setIsDelete(1);//删除
-        sysTenant.setUpdateById(SecurityUtils.getUserId());
-        sysTenantMapper.updateById(sysTenant);
+        //删除
+        sysTenantMapper.deleteById(tenantId);
     }
 
     @Override
@@ -75,25 +72,22 @@ public class SysTenantServiceImpl implements SysTenantService {
         }
         tenantIds.forEach(tenantId -> {
             //关联角色不能删除
-            List<SysRole> sysRoles = sysRoleMapper.selectList(new QueryWrapper<SysRole>().eq("tenant_id", tenantId).eq("is_delete", 0));
+            List<SysRole> sysRoles = sysRoleMapper.selectList(new QueryWrapper<SysRole>().eq("tenant_id", tenantId));
             if(CollectionUtils.isNotEmpty(sysRoles)) {
                 throw new GlobalCommonException("租户下存在有效角色,不能删除");
             }
             //关联部门不能删除
-            List<SysDepartment> departments = sysDepartmentMapper.selectList(new QueryWrapper<SysDepartment>().eq("tenant_id", tenantId).eq("is_delete", 0));
+            List<SysDepartment> departments = sysDepartmentMapper.selectList(new QueryWrapper<SysDepartment>().eq("tenant_id", tenantId));
             if(CollectionUtils.isNotEmpty(departments)) {
                 throw new GlobalCommonException("租户下存在有效部门,不能删除");
             }
             //关联用户不能删除
-            List<SysUser> sysUsers = sysUserMapper.selectList(new QueryWrapper<SysUser>().eq("tenant_id", tenantId).eq("is_delete", 0));
+            List<SysUser> sysUsers = sysUserMapper.selectList(new QueryWrapper<SysUser>().eq("tenant_id", tenantId));
             if(CollectionUtils.isNotEmpty(sysUsers)) {
                 throw new GlobalCommonException("租户下存在有效用户,不能删除");
             }
-            SysTenant sysTenant = new SysTenant();
-            sysTenant.setTenantId(tenantId);
-            sysTenant.setIsDelete(1);//删除
-            sysTenant.setUpdateById(SecurityUtils.getUserId());
-            sysTenantMapper.updateById(sysTenant);
+            //删除
+            sysTenantMapper.deleteById(tenantId);
         });
     }
 
@@ -114,7 +108,6 @@ public class SysTenantServiceImpl implements SysTenantService {
         List<SysTenant> sysTenants = sysTenantMapper.selectList(new QueryWrapper<SysTenant>()
                 .like(StringUtils.isNotEmpty(tenantName), "tenant_name", tenantName)
                 .eq(status != null, "`status`", status)
-                .eq("`is_delete`", 0)//未删除的租户
                 .ge(startTime != null, "create_time", startTime)
                 .le(endTime != null, "create_time", endTime)
                 .orderByAsc("create_time")
@@ -148,6 +141,6 @@ public class SysTenantServiceImpl implements SysTenantService {
 
     @Override
     public List<SysTenant> getSysTenantAll() {
-        return sysTenantMapper.selectList(new QueryWrapper<SysTenant>().eq("is_delete", 0).eq("status",0).orderByDesc("update_time"));
+        return sysTenantMapper.selectList(new QueryWrapper<SysTenant>().eq("status",0).orderByDesc("update_time"));
     }
 }

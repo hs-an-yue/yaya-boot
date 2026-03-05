@@ -14,7 +14,6 @@
         <result column="menu_level" property="menuLevel"/>
         <result column="order_num" property="orderNum"/>
         <result column="status" property="status"/>
-        <result column="is_delete" property="isDelete"/>
         <result column="create_by_id" property="createById"/>
         <result column="update_by_id" property="updateById"/>
         <result column="create_time" property="createTime"/>
@@ -28,8 +27,7 @@
         FROM
             sys_menu
         <where>
-            is_delete = 0
-            AND parent_id = '0'
+            parent_id = '0'
             <if test="status!=null"> AND `status` = #{status}</if>
             <if test="menuTitle!=null and menuTitle!=''">  AND menu_title LIKE CONCAT( '%', #{menuTitle}, '%' )</if>
         </where>
@@ -42,8 +40,7 @@
         FROM
             sys_menu
         <where>
-            is_delete = 0
-            AND parent_id = #{parentId}
+            parent_id = #{parentId}
             <if test="status!=null"> AND `status` = #{status}</if>
         </where>
         ORDER BY order_num
@@ -59,7 +56,6 @@
         <result column="menu_level" property="menuLevel"/>
         <result column="order_num" property="orderNum"/>
         <result column="status" property="status"/>
-        <result column="is_delete" property="isDelete"/>
         <result column="create_by_id" property="createById"/>
         <result column="update_by_id" property="updateById"/>
         <result column="create_time" property="createTime"/>
@@ -72,8 +68,7 @@
         FROM
             sys_menu
         <where>
-            is_delete = 0
-            AND parent_id = '0'
+            parent_id = '0'
         </where>
         ORDER BY order_num
     </select>
@@ -84,8 +79,7 @@
         FROM
             sys_menu
         <where>
-            is_delete = 0
-            AND parent_id = #{parentId}
+            parent_id = #{parentId}
         </where>
         ORDER BY order_num
     </select>
@@ -100,7 +94,6 @@
         <result column="menu_level" property="menuLevel"/>
         <result column="order_num" property="orderNum"/>
         <result column="status" property="status"/>
-        <result column="is_delete" property="isDelete"/>
         <result column="create_by_id" property="createById"/>
         <result column="update_by_id" property="updateById"/>
         <result column="create_time" property="createTime"/>
@@ -116,7 +109,6 @@
         WHERE
             rm.menu_id = m.menu_id
             AND m.parent_id = '0'
-            AND m.is_delete = 0
             AND m.status = 0
             AND m.menu_type IN(1,2)
             AND rm.role_id = #{roleId}
@@ -133,7 +125,6 @@
             rm.menu_id = m.menu_id
             AND parent_id = #{parentId}
             AND rm.role_id = #{roleId}
-            AND is_delete = 0
             AND m.status = 0
             AND m.menu_type IN(1,2)
         ORDER BY order_num
