@@ -73,6 +73,8 @@
                     dataType:'json',
                     success:function(resp){
                         if(resp.code===0){
+                            //清空登陆信息
+                            layui.sessionData('yaya', null);
                             //关闭弹窗
                             let index = parent.layer.getFrameIndex(window.name); // 先得到当前 iframe 层的索引
                             parent.layer.close(index); // 再执行关闭

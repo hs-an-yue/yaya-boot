@@ -192,10 +192,7 @@
                     area: ['350px', '300px'],
                     content: 'views/pwd-change.html',
                     end: function(){
-                        //清空登陆信息
-                        layui.sessionData('yaya', null);
-                        //token不存在直接跳转到登陆页
-                        location.href="login.html";
+                        window.parent.location.reload();
                     }
                 });
 

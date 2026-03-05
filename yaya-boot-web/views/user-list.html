@@ -327,7 +327,6 @@
 
             //单元格事件
             table.on('tool(table-user)', function(obj){
-                console.log(obj);
                 let event = obj.event;
                 if(event==='del'){//删除
                     layer.confirm('确定删除吗？', function(index){
@@ -356,8 +355,30 @@
                             }
                         }); 
                     });
-
-                }else{
+                }else if(event==='edit'){
+                    layer.open({
+                        type: 2, // page 层类型 iframe
+                        area: ['650px', '550px'],
+                        title: '更新',
+                        shade: 0.6, // 遮罩透明度
+                        shadeClose: true, // 点击遮罩区域，关闭弹层
+                        content: `user-edit.html?roleId=${obj.data.roleId}&tenantId=${obj.data.tenantId}&deptId=${obj.data.deptId}&sex=${obj.data.sex}`,
+                        end: function(){
+                            //刷新表格
+                            table.reload('table-user');
+                        },
+                        success: function(layero, index){
+                            let body = layer.getChildFrame('body', index);
+                            // 给 iframe 页中的某个输入框赋值
+                            body.find('input[name="userId"]').val(obj.data.userId);
+                            body.find('input[name="username"]').val(obj.data.username);
+                            body.find('input[name="phone"]').val(obj.data.phone);
+                            body.find('input[name="email"]').val(obj.data.email);
+                            body.find('input[name="remark"]').val(obj.data.remark);
+                            body.find('input[name="expiredTime"]').val(obj.data.expiredTime);
+                        }
+                    });
+                } else{
                     layer.msg("功能还在路上~");
                 }
             })
