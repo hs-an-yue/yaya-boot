@@ -5,7 +5,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yaya.boot.dto.Page;
 import com.yaya.boot.entity.SysFile;
+import com.yaya.boot.entity.SysTenant;
+import com.yaya.boot.entity.SysUser;
 import com.yaya.boot.mapper.SysFileMapper;
+import com.yaya.boot.mapper.SysTenantMapper;
+import com.yaya.boot.mapper.SysUserMapper;
 import com.yaya.boot.service.SysFileService;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +24,10 @@ import java.util.List;
 public class SysFileServiceImpl implements SysFileService {
     @Resource
     private SysFileMapper sysFileMapper;
+    @Resource
+    private SysTenantMapper sysTenantMapper;
+    @Resource
+    private SysUserMapper sysUserMapper;
 
     @Override
     public void addSave(SysFile sysFile) {
@@ -27,15 +35,21 @@ public class SysFileServiceImpl implements SysFileService {
     }
 
     @Override
-    public Page getFilePage(Integer pageNo, Integer pageSize, String fileName, LocalDateTime startTime, LocalDateTime endTime,Long tenantId) {
+    public Page getFilePage(Integer pageNo, Integer pageSize, String fileName, LocalDateTime startTime, LocalDateTime endTime,String tenantId) {
         PageHelper.startPage(pageNo, pageSize);
         List<SysFile> sysFiles = sysFileMapper.selectList(new QueryWrapper<SysFile>()
                 .like(StringUtils.isNotEmpty(fileName), "file_name", fileName)
-                .ge("create_time", startTime)
-                .le("create_time", endTime)
-                .eq(tenantId!=null,"tenant_id",tenantId)
+                .ge(startTime!=null,"create_time", startTime)
+                .le(endTime!=null,"create_time", endTime)
+                .eq(StringUtils.isNotEmpty(tenantId),"tenant_id",tenantId)
                 .orderByAsc("create_time")
         );
+        sysFiles.forEach(sysFile -> {
+            SysTenant sysTenant = sysTenantMapper.selectById(sysFile.getTenantId());
+            sysFile.setSysTenant(sysTenant);
+            SysUser sysUser = sysUserMapper.selectById(sysFile.getUploadUserId());
+            sysFile.setUploadUser(sysUser);
+        });
         PageInfo<SysFile> info = new PageInfo<>(sysFiles);
         Page page = new Page();
         page.setPageNum(info.getPageNum());

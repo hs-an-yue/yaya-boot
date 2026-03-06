@@ -412,6 +412,10 @@
 .yaya-btn-circle-small>i{
     font-size: 12px;
 }
+/*宽度100%*/
+.yaya-fluid{
+    width: 100%;
+}
 /* 标签扩展 */
 .yaya-tag{
     display: inline-flex;
@@ -423,7 +427,6 @@
     height: 24px;
     justify-content:center;
     vertical-align: middle;
-    line-height: 1;
     border-width: 1px;
     border-style: solid;
     border-radius: 4px;

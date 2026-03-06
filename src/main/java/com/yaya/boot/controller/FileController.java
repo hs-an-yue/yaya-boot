@@ -219,8 +219,8 @@ public class FileController {
     public Result getFilePage(@RequestParam(value = "pageNo") Integer pageNo,
                               @RequestParam(value = "pageSize") Integer pageSize,
                               @RequestParam(value = "fileName",required = false) String fileName,
-                              @RequestParam(value = "tenantId",required = false) Long tenantId,
-                              @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam(value = "endTime",required = false) LocalDateTime startTime,
+                              @RequestParam(value = "tenantId",required = false) String tenantId,
+                              @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam(value = "startTime",required = false) LocalDateTime startTime,
                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam(value = "endTime",required = false) LocalDateTime endTime){
         return Result.ok(sysFileService.getFilePage(pageNo, pageSize, fileName, startTime, endTime,tenantId));
     }

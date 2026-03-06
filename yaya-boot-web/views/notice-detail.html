@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <link rel="stylesheet" href="../css/yaya-common.css">
+    <link rel="stylesheet" href="../css/yaya-style-extend.css">
     <title>公告详情</title>
     <style>
         :root {
@@ -54,18 +57,6 @@
             gap: 15px;
             margin-bottom: 20px;
         }
-
-        .level-badge {
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 14px;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .level-urgent { background-color: var(--danger-color); }
-        .level-important { background-color: var(--warning-color); }
-        .level-normal { background-color: var(--success-color); }
 
         h1 { margin: 0; font-size: 28px; color: #2c3e50; }
 
@@ -142,78 +133,86 @@
     </style>
 </head>
 <body>
-
-<div class="notice-container">
+<div class="notice-container" id="notice-container">
+    <!-- 详情内容显示区域 -->
+</div>
+<script id="ID-notice-tpl" type="text/html">
+    <!-- 公告顶部信息区域 -->
     <div class="header-section">
         <div class="title-row">
-            <span id="noticeLevel" class="level-badge level-urgent">紧急</span>
-            <h1 id="noticeTitle">关于 2026 年数字化转型战略启动的通知</h1>
+            {{ if(d.noticeLevel===0){ }}
+            <span class="yaya-tag yaya-tag-success">普通</span>
+            {{ } else if(d.noticeLevel===1){ }}
+            <span class="yaya-tag yaya-tag-warning">重要</span>
+            {{ } else { }}
+            <span class="yaya-tag yaya-tag-danger">紧急</span>
+            {{ }  }}
+            <h1 id="noticeTitle">{{=d.noticeTitle}}</h1>
+            {{ if(d.isTop === 1){ }}
+              <span style="font-size: 24px;">🆙</span>
+            {{ } }}
         </div>
         <div class="meta-grid">
-            <div class="meta-item"><b>发起人:</b> <span id="author">首席技术官 (CTO)</span></div>
-            <div class="meta-item"><b>发起时间:</b> <span id="createTime">2026-03-05 14:00</span></div>
-            <div class="meta-item"><b>公告类型:</b> <span id="noticeType">战略部署</span></div>
+            <div class="meta-item"><b>发起人:</b> <span id="author">{{=d.publishUser.username}}</span></div>
+            <div class="meta-item"><b>发起时间:</b> <span id="createTime">{{=d.createTime}}</span></div>
+            <div class="meta-item"><b>公告类型:</b> <span id="noticeType">{{=d.sysNoticeType.noticeTypeName}}</span></div>
         </div>
     </div>
-
     <article class="notice-content">
-        <p>各位同仁：</p>
-        <p>经集团董事会研究决定，即日起正式启动“2026数字化航行”计划。本计划旨在全面提升公司在人工智能、自动化生产线以及数据中台方面的核心竞争力。</p>
-        
-        <img src="https://picsum.photos/id/1/800/400" alt="战略图解" class="content-img">
-
-        <p>以下是第一批次启动的项目预算及负责人清单：</p>
-
-        <table class="data-table" id="projectTable">
-            <thead>
-                <tr>
-                    <th>项目名称</th>
-                    <th>责任部门</th>
-                    <th>预算(万元)</th>
-                    <th>预计完成时间</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>AI 智能调度系统</td>
-                    <td>研发中心</td>
-                    <td>500.00</td>
-                    <td>2026-08-12</td>
-                </tr>
-                <tr>
-                    <td>数据湖仓一体化</td>
-                    <td>大数据部</td>
-                    <td>320.00</td>
-                    <td>2026-11-30</td>
-                </tr>
-                <tr>
-                    <td>全自动包装线升级</td>
-                    <td>制造部</td>
-                    <td>1200.00</td>
-                    <td>2027-02-15</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <p>请各部门接此通知后，于本周五前提交初步执行方案。</p>
+        <!-- 内容显示区域 -->
+         {{-d.noticeContent}}
     </article>
-</div>
-
-<script>
-
-    //页面初始化模拟 (处理不同级别颜色)
-    window.onload = function() {
-        const levelEl = document.getElementById('noticeLevel');
-        const level = levelEl.innerText;
-        
-        // 动态切换级别样式
-        if(level === '重要') {
-            levelEl.className = 'level-badge level-important';
-        } else if(level === '普通') {
-            levelEl.className = 'level-badge level-normal';
-        }
-    }
 </script>
+<script src="../layui/layui.js"></script>
+<script src="../js/server.js"></script>
+<script>
+    layui.use(function(){
+        const $ = layui.$;
+        const layer = layui.layer;
+        const laytpl = layui.laytpl;
 
+        //获取url地址中的参数
+        let url = layui.url();
+        let search = url.search;
+        let noticeId = search.noticeId;
+        
+        // 获取模板字符
+        let template = document.getElementById('ID-notice-tpl').innerHTML; 
+        // 输出结果的目标元素
+        let target = document.getElementById('notice-container'); 
+        
+
+        
+        //获取公告详情
+        let index_ = layer.load(0);//开启加载图标
+        $.ajax({
+            url: server_url+'/getSysNoticeById',
+            type:'GET',
+            dataType:'json',
+            headers:{
+                'Authorization': token
+            },
+            data:{noticeId:noticeId},
+            success: function(resp){
+                //关闭加载图标
+                layer.close(index_);
+                if(resp.code===0){
+                    console.log(resp);
+                    if(resp.code===0){
+                        // 渲染并输出结果
+                        laytpl(template,{tagStyle: 'modern'}).render(resp.data, function(html) {
+                            target.innerHTML = html;
+                        });    
+                    }else{
+                        layer.msg(resp.msg);
+                    }
+                }else{
+                    layer.msg(resp.msg)
+                }
+            }
+        });
+        
+    });
+</script>
 </body>
 </html>

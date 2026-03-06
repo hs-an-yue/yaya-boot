@@ -5,11 +5,16 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yaya.boot.dto.Page;
 import com.yaya.boot.entity.SysNotice;
+import com.yaya.boot.entity.SysNoticeType;
 import com.yaya.boot.entity.SysNoticeUser;
 import com.yaya.boot.mapper.SysNoticeMapper;
+import com.yaya.boot.mapper.SysNoticeTypeMapper;
 import com.yaya.boot.mapper.SysNoticeUserMapper;
+import com.yaya.boot.mapper.SysUserMapper;
 import com.yaya.boot.service.SysNoticeService;
+import com.yaya.boot.utils.SecurityUtils;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,9 +29,14 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     private SysNoticeMapper sysNoticeMapper;
     @Resource
     private SysNoticeUserMapper sysNoticeUserMapper;
+    @Resource
+    private SysUserMapper sysUserMapper;
+    @Autowired
+    private SysNoticeTypeMapper sysNoticeTypeMapper;
 
     @Override
     public void publishSysNotice(SysNotice sysNotice) {
+        sysNotice.setPublishUserId(SecurityUtils.getUserId());
         sysNoticeMapper.insert(sysNotice);
     }
 
@@ -47,7 +57,12 @@ public class SysNoticeServiceImpl implements SysNoticeService {
 
     @Override
     public SysNotice getSysNoticeById(String noticeId) {
-        return sysNoticeMapper.selectById(noticeId);
+        SysNotice sysNotice = sysNoticeMapper.selectById(noticeId);
+        if(sysNotice!=null){
+            sysNotice.setSysNoticeType(sysNoticeTypeMapper.selectById(sysNotice.getNoticeTypeId()));
+            sysNotice.setPublishUser(sysUserMapper.selectById(sysNotice.getPublishUserId()));
+        }
+        return sysNotice;
     }
 
     @Override
@@ -55,6 +70,11 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         Page page = new  Page();
         PageHelper.startPage(pageNo, pageSize);
         List<SysNotice> sysNoticeList = sysNoticeMapper.selectList(new QueryWrapper<SysNotice>().eq("publish_user_id", publishUserId));
+        sysNoticeList.forEach(sysNotice -> {
+            sysNotice.setPublishUser(sysUserMapper.selectById(sysNotice.getPublishUserId()));
+            SysNoticeType sysNoticeType = sysNoticeTypeMapper.selectById(sysNotice.getNoticeTypeId());
+            sysNotice.setSysNoticeType(sysNoticeType);
+        });
         PageInfo<SysNotice> info = new PageInfo<>(sysNoticeList);
         page.setPageNum(info.getPageNum());
         page.setPageSize(info.getPageSize());

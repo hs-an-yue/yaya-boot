@@ -33,9 +33,9 @@ public class SysNotice {
     @TableField(value = "notice_level")
     private Integer noticeLevel;
 
-    @Schema(description = "公告类型: 1-通知, 2-新闻, 3-活动, 4-公示")
-    @TableField(value = "notice_type")
-    private Integer noticeType;
+    @Schema(description = "公告类型")
+    @TableField(value = "notice_type_id")
+    private String noticeTypeId;
 
     @Schema(description = "发布人ID")
     @TableField(value = "publish_user_id")
@@ -54,4 +54,16 @@ public class SysNotice {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @TableField(value = "update_time")
     private LocalDateTime updateTime;
+
+    /**
+     * 发布人
+     */
+    @TableField(exist = false)
+    private SysUser publishUser;
+
+    /**
+     * 类型
+     */
+    @TableField(exist = false)
+    private SysNoticeType sysNoticeType;
 }

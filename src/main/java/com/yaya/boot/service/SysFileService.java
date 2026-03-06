@@ -14,5 +14,5 @@ public interface SysFileService {
     /**
      * 分页
      */
-    Page getFilePage(Integer pageNo, Integer pageSize, String fileName, LocalDateTime startTime, LocalDateTime endTime,Long tenantId);
+    Page getFilePage(Integer pageNo, Integer pageSize, String fileName, LocalDateTime startTime, LocalDateTime endTime,String tenantId);
 }

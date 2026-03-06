@@ -183,12 +183,23 @@ CREATE TABLE `sys_notice` (
     `notice_title`          VARCHAR(100)    NOT NULL    		                        COMMENT '公告标题',
     `notice_content`        LONGTEXT        NOT NULL                                    COMMENT '公告内容,可以是文字，图片，视频，音频，表格等多媒体内容',
     `notice_level`          TINYINT(1)      NOT NULL                                    COMMENT '公告级别: 0-普通, 1-重要, 2-紧急',
-    `notice_type`           TINYINT(1)      NOT NULL                                    COMMENT '公告类型: 1-通知, 2-新闻, 3-活动, 4-公示',
+    `notice_type_id`        VARCHAR(100)    NOT NULL                                    COMMENT '公告类型ID关联(sys_notice_type)表主键',
     `publish_user_id`       VARCHAR(100)    NOT NULL                                    COMMENT '发布人ID',
     `is_top`                TINYINT(1)      NOT NULL    DEFAULT '0'                     COMMENT '是否置顶: 0-否, 1-是',
     `create_time`           DATETIME        DEFAULT NOW()                               COMMENT '上传时间',
     `update_time`           TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '设置当前时间，并且自动更新时间'
 )CHARACTER SET=utf8mb4 COMMENT='公告表';
+
+-- 公告类型表
+CREATE TABLE `sys_notice_type` (
+    `notice_type_id`            VARCHAR(100)    PRIMARY KEY    					            COMMENT '公告类型ID,主键',
+    `notice_type_name`          VARCHAR(100)    NOT NULL    		                        COMMENT '公告类型名称',
+    `tenant_id`                 VARCHAR(100)    NOT NULL    		                        COMMENT '租户ID',
+    `create_by_id`              VARCHAR(100)                                                COMMENT '创建人ID,关联用户表(sys_user)主键',
+    `update_by_id`              VARCHAR(100)                                                COMMENT '更新人ID,关联用户表(sys_user)主键',
+    `create_time`               DATETIME        DEFAULT NOW()                               COMMENT '上传时间',
+    `update_time`               TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '设置当前时间，并且自动更新时间'
+)CHARACTER SET=utf8mb4 COMMENT='公告类型表';
 
 -- 公告用户关联表
 CREATE TABLE `sys_notice_user` (

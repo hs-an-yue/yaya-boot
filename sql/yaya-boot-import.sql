@@ -11,7 +11,7 @@
  Target Server Version : 90500 (9.5.0)
  File Encoding         : 65001
 
- Date: 05/03/2026 15:50:33
+ Date: 06/03/2026 10:48:49
 */
 
 SET NAMES utf8mb4;
@@ -118,14 +118,16 @@ INSERT INTO `sys_menu` VALUES ('3', '用户管理', 'iconfont icon-CRMEB-yuangon
 INSERT INTO `sys_menu` VALUES ('4', '部门管理', 'iconfont icon-zhinengmofangicon_bumenguanli', 2, '', 'views/dept-list.html', 1, '2', 2, 0, '1', '1', '2026-02-09 15:07:15', '2026-03-05 13:55:59');
 INSERT INTO `sys_menu` VALUES ('5', '日志监控', 'iconfont icon-yibiaopan1', 1, '', '', 1, '0', 3, 0, '1', '1', '2026-02-09 15:07:15', '2026-03-05 13:55:24');
 INSERT INTO `sys_menu` VALUES ('535d5101b7e8b7be3836e98638c640b9', '服务监控', 'iconfont icon-CRMEB-neirongzixun-mianxing', 2, '', 'views/server-monitor.html', 2, 'df7b6bfda0695b5735c5b56a9e5c2450', 2, 0, '1', '1', '2026-03-05 13:44:14', '2026-03-05 13:50:48');
-INSERT INTO `sys_menu` VALUES ('554884f4c5867df42098a7e5f5353254', '公告管理', 'iconfont icon-CRMEB-mendiandingdan-xianxing', 2, '', 'views/notice-list.html', 2, '2', 6, 0, '1', '1', '2026-03-05 13:47:44', '2026-03-05 13:47:44');
 INSERT INTO `sys_menu` VALUES ('6', '登陆日志', 'layui-icon layui-icon-form', 2, NULL, 'views/login-log.html', 1, '5', 1, 0, '1', '1', '2026-02-09 15:07:15', '2026-02-09 15:07:15');
 INSERT INTO `sys_menu` VALUES ('60c1536310c6f201b683138fa38ab744', '租户管理', 'iconfont icon-CRMEB-kefuguanli-xianxing', 2, '', 'views/tenant-list.html', 2, '2', 5, 0, '1', '1', '2026-02-09 18:23:36', '2026-03-05 13:53:43');
 INSERT INTO `sys_menu` VALUES ('7', '系统日志', 'layui-icon layui-icon-table', 2, NULL, 'views/system-log.html', 1, '5', 2, 0, '1', '1', '2026-02-09 15:07:15', '2026-02-09 15:07:15');
 INSERT INTO `sys_menu` VALUES ('701c10b0058f0c81f197a92ebb7556ae', '文件列表', 'iconfont icon-CRMEB-caiwujilu-mianxing', 2, '', 'views/file-list.html', 2, 'bc1cd48e9d67d31d8fd4e7d16918c541', 1, 0, '1', '1', '2026-03-05 13:45:54', '2026-03-05 13:45:54');
+INSERT INTO `sys_menu` VALUES ('893fd1f6244a0bc9c265121c37e6446d', '公告管理', 'iconfont icon-CRMEB-mendiandingdan-xianxing', 1, '', '', 1, '0', 6, 0, '1', '1', '2026-03-06 08:20:54', '2026-03-06 08:20:54');
 INSERT INTO `sys_menu` VALUES ('bc1cd48e9d67d31d8fd4e7d16918c541', '文件管理', 'iconfont icon-CRMEB-qitaruku-xianxing', 1, '', '', 1, '0', 5, 0, '1', '1', '2026-03-05 13:45:17', '2026-03-05 13:45:17');
 INSERT INTO `sys_menu` VALUES ('c4658a333dd447a1782703ec6e61b95e', '缓存监控', 'iconfont icon-CRMEB-miaoshahuodong-xianxing', 2, '', 'views/cache-monitor.html', 2, 'df7b6bfda0695b5735c5b56a9e5c2450', 1, 0, '1', '1', '2026-03-05 13:43:29', '2026-03-05 13:43:29');
 INSERT INTO `sys_menu` VALUES ('df7b6bfda0695b5735c5b56a9e5c2450', '系统监控', 'iconfont icon-CRMEB-daichuliyonghufankui-xianxing', 1, '', '', 1, '0', 4, 0, '1', '1', '2026-03-05 13:42:52', '2026-03-05 13:42:52');
+INSERT INTO `sys_menu` VALUES ('e55f5abe33940b40f45fe3c85fbf75ce', '公告类型', 'iconfont icon-tubiao', 2, '', 'views/notice-type-list.html', 2, '893fd1f6244a0bc9c265121c37e6446d', 2, 0, '1', '1', '2026-03-06 08:25:06', '2026-03-06 08:56:56');
+INSERT INTO `sys_menu` VALUES ('e7fcfdc61ba1bd740aa38112883b4453', '公告列表', 'iconfont icon-CRMEB-qiandao-xianxing', 2, '', 'views/notice-list.html', 2, '893fd1f6244a0bc9c265121c37e6446d', 1, 0, '1', '1', '2026-03-06 08:21:29', '2026-03-06 08:21:29');
 INSERT INTO `sys_menu` VALUES ('fe9ee4bd63de119d8cf5a8889bc1a0a4', '角色管理', 'iconfont icon-CRMEB-daishenhe-mianxing', 2, '', 'views/role-list.html', 2, '2', 3, 0, '1', '1', '2026-02-09 15:16:08', '2026-03-05 13:53:31');
 
 -- ----------------------------
@@ -137,8 +139,8 @@ CREATE TABLE `sys_notice`  (
   `notice_title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '公告标题',
   `notice_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '公告内容,可以是文字，图片，视频，音频，表格等多媒体内容',
   `notice_level` tinyint(1) NOT NULL COMMENT '公告级别: 0-普通, 1-重要, 2-紧急',
-  `notice_type` tinyint(1) NOT NULL COMMENT '公告类型: 1-通知, 2-新闻, 3-活动, 4-公示',
-  `public_user_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '发布人ID',
+  `notice_type_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '公告类型ID关联(sys_notice_type)表主键',
+  `publish_user_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '发布人ID',
   `is_top` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否置顶: 0-否, 1-是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
   `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '设置当前时间，并且自动更新时间',
@@ -148,6 +150,29 @@ CREATE TABLE `sys_notice`  (
 -- ----------------------------
 -- Records of sys_notice
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for sys_notice_type
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_notice_type`;
+CREATE TABLE `sys_notice_type`  (
+  `notice_type_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '公告类型ID,主键',
+  `notice_type_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '公告类型名称',
+  `tenant_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '租户ID',
+  `create_by_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人ID,关联用户表(sys_user)主键',
+  `update_by_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '更新人ID,关联用户表(sys_user)主键',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '设置当前时间，并且自动更新时间',
+  PRIMARY KEY (`notice_type_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '公告类型表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_notice_type
+-- ----------------------------
+INSERT INTO `sys_notice_type` VALUES ('001d77a67c2464bfc56ce9b961ce8da7', '通知', '1', '1', '1', '2026-03-06 10:34:47', '2026-03-06 10:34:47');
+INSERT INTO `sys_notice_type` VALUES ('1aed7300d494b163d12acde9c1120016', '活动', '1', '1', '1', '2026-03-06 10:36:46', '2026-03-06 10:36:46');
+INSERT INTO `sys_notice_type` VALUES ('6a5070d2078bd7395e43d5f675458b0c', '公示', '1', '1', '1', '2026-03-06 10:42:28', '2026-03-06 10:46:41');
+INSERT INTO `sys_notice_type` VALUES ('776ec87967ba7295011c1a904f529f56', '新闻', '1', '1', '1', '2026-03-06 10:36:41', '2026-03-06 10:36:41');
 
 -- ----------------------------
 -- Table structure for sys_notice_user
@@ -257,36 +282,6 @@ CREATE TABLE `sys_role_menu`  (
 -- ----------------------------
 -- Records of sys_role_menu
 -- ----------------------------
-INSERT INTO `sys_role_menu` VALUES ('1', '15');
-INSERT INTO `sys_role_menu` VALUES ('1', '2');
-INSERT INTO `sys_role_menu` VALUES ('1', '3');
-INSERT INTO `sys_role_menu` VALUES ('1', '4');
-INSERT INTO `sys_role_menu` VALUES ('1', '5');
-INSERT INTO `sys_role_menu` VALUES ('1', '535d5101b7e8b7be3836e98638c640b9');
-INSERT INTO `sys_role_menu` VALUES ('1', '554884f4c5867df42098a7e5f5353254');
-INSERT INTO `sys_role_menu` VALUES ('1', '6');
-INSERT INTO `sys_role_menu` VALUES ('1', '60c1536310c6f201b683138fa38ab744');
-INSERT INTO `sys_role_menu` VALUES ('1', '7');
-INSERT INTO `sys_role_menu` VALUES ('1', '701c10b0058f0c81f197a92ebb7556ae');
-INSERT INTO `sys_role_menu` VALUES ('1', 'bc1cd48e9d67d31d8fd4e7d16918c541');
-INSERT INTO `sys_role_menu` VALUES ('1', 'c4658a333dd447a1782703ec6e61b95e');
-INSERT INTO `sys_role_menu` VALUES ('1', 'df7b6bfda0695b5735c5b56a9e5c2450');
-INSERT INTO `sys_role_menu` VALUES ('1', 'fe9ee4bd63de119d8cf5a8889bc1a0a4');
-INSERT INTO `sys_role_menu` VALUES ('2', '15');
-INSERT INTO `sys_role_menu` VALUES ('2', '2');
-INSERT INTO `sys_role_menu` VALUES ('2', '3');
-INSERT INTO `sys_role_menu` VALUES ('2', '4');
-INSERT INTO `sys_role_menu` VALUES ('2', '5');
-INSERT INTO `sys_role_menu` VALUES ('2', '535d5101b7e8b7be3836e98638c640b9');
-INSERT INTO `sys_role_menu` VALUES ('2', '554884f4c5867df42098a7e5f5353254');
-INSERT INTO `sys_role_menu` VALUES ('2', '6');
-INSERT INTO `sys_role_menu` VALUES ('2', '60c1536310c6f201b683138fa38ab744');
-INSERT INTO `sys_role_menu` VALUES ('2', '7');
-INSERT INTO `sys_role_menu` VALUES ('2', '701c10b0058f0c81f197a92ebb7556ae');
-INSERT INTO `sys_role_menu` VALUES ('2', 'bc1cd48e9d67d31d8fd4e7d16918c541');
-INSERT INTO `sys_role_menu` VALUES ('2', 'c4658a333dd447a1782703ec6e61b95e');
-INSERT INTO `sys_role_menu` VALUES ('2', 'df7b6bfda0695b5735c5b56a9e5c2450');
-INSERT INTO `sys_role_menu` VALUES ('2', 'fe9ee4bd63de119d8cf5a8889bc1a0a4');
 
 -- ----------------------------
 -- Table structure for sys_role_permission
@@ -360,7 +355,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', '5', '1', '1', '管理员', 'admin', 'admin123@163.com', '$2a$10$0opMiSKAhwPyYyVOS/1ykO8Ik2/xuXhyQFCa7bbaOcCJObpH54cfy', 1, 'file/avatar.png', 1, '备注', '1', '1', '2026-02-09 15:01:50', '2026-12-31 23:59:59', '2026-03-05 14:39:30');
+INSERT INTO `sys_user` VALUES ('1', '5', '1', '1', '管理员', 'admin', 'admin123@163.com', '$2a$10$2Z2UEjaqgtPZru9M.26JDe.jPPtMQO/v0RNITEbZ3UEAzyacZZ22O', 1, 'file/avatar.png', 1, '备注', '1', '1', '2026-02-09 15:01:50', '2026-12-31 23:59:59', '2026-03-06 09:59:39');
 INSERT INTO `sys_user` VALUES ('2', '6', '2', '1', '运营', 'operation', 'operation123@163.com', '$2a$10$iTBYWW89ZPbyQMowkfw9YubzrMgMgpEdCU3WgperYH1NCouKBdwBS', 1, 'file/avatar.gif', 1, '备注', '1', '1', '2026-02-09 15:01:50', '2026-12-31 23:59:59', '2026-03-01 14:50:02');
 
 SET FOREIGN_KEY_CHECKS = 1;
