@@ -75,24 +75,12 @@ public class SysNoticeController {
     @Parameters(value = {
         @Parameter(name = "pageNo",description = "当前页ID",required = true),
         @Parameter(name = "pageSize",description = "页容量",required = true),
-        @Parameter(name = "userId",description = "发布人ID",required = true)
+        @Parameter(name = "deptId",description = "发布人部门ID",required = true)
     })
-    @GetMapping(value = "/mySysNoticePageByUserId")
-    public Result mySysNoticePageByUserId(@RequestParam(value = "pageNo") Integer pageNo,
+    @GetMapping(value = "/mySysNoticePageByDeptId")
+    public Result mySysNoticePageByDeptId(@RequestParam(value = "pageNo") Integer pageNo,
                                           @RequestParam(value = "pageSize") Integer pageSize,
-                                          @RequestParam(value = "userId") String userId){
-        return Result.ok(sysNoticeService.mySysNoticePageByUserId(pageNo,pageSize,userId));
-    }
-
-    @Operation(summary = "公告-阅读")
-    @Parameters(value = {
-        @Parameter(name = "noticeId",description = "公告ID",required = true),
-        @Parameter(name = "userId",description = "用户ID",required = true)
-    })
-    @GetMapping(value = "/readSysNoticeByNoticeIdAndUserId")
-    public Result readSysNoticeByNoticeIdAndUserId(@RequestParam(value = "noticeId") String noticeId,
-                                                   @RequestParam(value = "userId") String userId){
-        sysNoticeService.readSysNoticeByNoticeIdAndUserId(noticeId, userId);
-        return Result.ok();
+                                          @RequestParam(value = "deptId") String deptId){
+        return Result.ok(sysNoticeService.mySysNoticePageByDeptId(pageNo,pageSize,deptId));
     }
 }

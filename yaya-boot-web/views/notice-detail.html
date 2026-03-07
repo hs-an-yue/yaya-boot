@@ -130,9 +130,19 @@
             body { background: #fff; padding: 0; }
             .notice-container { box-shadow: none; max-width: 100%; }
         }
+        .goback{
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
+<div class="goback">
+    <a href="my-notice.html">
+        <svg t="1772805186784" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4663" width="24" height="24">
+            <path d="M486.4 305.664V128L0 473.6 486.4 819.2v-177.7152c12.0832-0.4608 24.2176-0.6144 36.4544-0.3584A640.8192 640.8192 0 0 1 1024 896c-16.9984-298.3936-243.0464-543.4368-537.6-590.336z" fill="#00C080" p-id="4664" data-spm-anchor-id="a313x.search_index.0.i0.2c6a3a81Jmh4Z8" class=""></path>
+        </svg>
+    </a> 
+</div>   
 <div class="notice-container" id="notice-container">
     <!-- 详情内容显示区域 -->
 </div>
@@ -160,7 +170,7 @@
     </div>
     <article class="notice-content">
         <!-- 内容显示区域 -->
-         {{-d.noticeContent}}
+         {{- d.noticeContent}}
     </article>
 </script>
 <script src="../layui/layui.js"></script>
@@ -175,13 +185,12 @@
         let url = layui.url();
         let search = url.search;
         let noticeId = search.noticeId;
-        
+
         // 获取模板字符
         let template = document.getElementById('ID-notice-tpl').innerHTML; 
         // 输出结果的目标元素
         let target = document.getElementById('notice-container'); 
         
-
         
         //获取公告详情
         let index_ = layer.load(0);//开启加载图标
@@ -197,7 +206,6 @@
                 //关闭加载图标
                 layer.close(index_);
                 if(resp.code===0){
-                    console.log(resp);
                     if(resp.code===0){
                         // 渲染并输出结果
                         laytpl(template,{tagStyle: 'modern'}).render(resp.data, function(html) {

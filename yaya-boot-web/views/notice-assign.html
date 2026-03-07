@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- 响应式配置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- LayUI css库 -->
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <link rel="stylesheet" href="../css/yaya-common.css">
+    <link rel="stylesheet" href="../css/yaya-style-extend.css">
+    <link rel="stylesheet" href="../font/iconfont.css">
+    <title>yaya-admin-plus</title>
+</head>
+<body>
+    <div class="yaya-container">
+        <div class="layui-fluid">
+            <div id="ID-tree-assign" style="padding-bottom: 50px;"></div>
+            <!-- 提交按钮 -->
+            <button id="pushAssign"  type="button" class="yaya-btn yaya-primary" style="position: fixed;width: 420px; bottom: 10px;left: 10px;">确定</button>
+        </div>  
+    </div>
+    <script src="../layui/layui.js"></script>
+    <script src="../js/server.js"></script>
+    <script>
+        layui.use(function(){
+            const $ = layui.$;
+            const tree = layui.tree;
+            const layer = layui.layer;
+
+            //获取当前页面地址对象
+            let url = layui.url();
+            //获取参数
+            let noticeId = url.search.noticeId;
+
+            //部门回显合显示
+
+            $.ajax({
+                type:'get',
+                url:server_url+'/getDeptIdsByNoticeId',
+                headers:{
+                    'Authorization': token
+                },
+                data:{
+                    noticeId:noticeId
+                },
+                dataType:'json',
+                success:function(resp){
+                    if(resp.code===0){
+                        //已发送的部门ID
+                        let data_ = resp.data;
+                        //部门列表
+                        $.ajax({
+                            type:'get',
+                            url:server_url+'/getSysDepartmentTree',
+                            headers:{
+                                'Authorization': token
+                            },
+                            data:{
+                                tenantId:user.tenantId
+                            },
+                            dataType:'json',
+                            success:function(resp){
+                                if(resp.code===0){
+                                    let data = resp.data;
+                                    setSpread(data);
+                                    tree.render({
+                                        elem: '#ID-tree-assign',
+                                        data: data,
+                                        showCheckbox: true,
+                                        onlyIconControl: true,
+                                        id: 'dept-id',
+                                        customName:{
+                                            id:'deptId',
+                                            title:'deptName',
+                                            children: 'children'
+                                        }
+                                    });
+                                    //回显
+                                    tree.setChecked('dept-id', data_);
+                                }else{
+                                    layer.msg("获取部门树失败");
+                                }
+                            }
+                        });
+                    }else{
+                        layer.msg("获取已发送部门失败");
+                    }
+                }
+            });
+
+            //给部门数据添加展开属性
+            function setSpread(nodeList) {
+                for (var i = 0; i < nodeList.length; i++) {
+                    nodeList[i].spread = true; // 关键代码
+                    if (nodeList[i].children && nodeList[i].children.length > 0) {
+                        setSpread(nodeList[i].children);
+                    }
+                }
+            }
+
+
+            //数据提交
+            $("#pushAssign").click(function(){
+                //获取选中数据
+                let checkData = tree.getChecked('dept-id');
+                let ids = getAllDeptIds(checkData);
+                $.ajax({
+                    type:'post',
+                    url:server_url+'/addSysNoticeDept',
+                    headers:{
+                        'Authorization': token
+                    },
+                    data:{
+                        noticeId:noticeId,
+                        deptIds:ids.join(",")
+                    },
+                    dataType:'json',
+                    success:function(resp){
+                        if(resp.code===0){
+                            //关闭弹窗
+                            let index = parent.layer.getFrameIndex(window.name); // 先得到当前 iframe 层的索引
+                            parent.layer.close(index); // 再执行关闭
+                        }else{
+                            layer.msg(resp.msg);
+                        }
+                    }
+                });
+            });
+
+
+            function getAllDeptIds(depts) {
+                let ids = [];
+                function traverse(deptList) {
+                    for (const dept of deptList) {
+                        ids.push(dept.deptId);
+                        if (dept.children && dept.children.length > 0) {
+                            traverse(dept.children);
+                        }
+                    }
+                }
+                traverse(depts);
+                return ids;
+            }
+        });
+    </script>
+</body>
+</html>

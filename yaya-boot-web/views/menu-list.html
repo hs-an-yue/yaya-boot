@@ -238,10 +238,11 @@
                 },
                 cols: [[
                     {
-                        type: 'numbers',title:'#'
+                        type: 'numbers',title:'#',fixed: 'left'
                     },
                     {
                         field:'menuTitle',
+                        width:'20%',
                         title: '菜单名称'
                     },
                     {
@@ -272,7 +273,7 @@
                     },
                     {
                         field:'perms',
-                        width:'10%',
+                        width:'13%',
                         title: '权限标识'
                     },
                     {
@@ -293,8 +294,9 @@
                         title: '创建时间'
                     },
                     {
-                        width:'15%',
+                        width:'13%',
                         title: '操作',
+                        fixed: 'right',
                         templet: function(d){
                             let str='<button class="yaya-btn is-link-primary yaya-btn-small" lay-event="edit">更新</button>';
                             str+='<button class="yaya-btn is-link-danger yaya-btn-small" lay-event="del">删除</button>';

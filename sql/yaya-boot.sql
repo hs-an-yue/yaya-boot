@@ -201,11 +201,9 @@ CREATE TABLE `sys_notice_type` (
     `update_time`               TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '设置当前时间，并且自动更新时间'
 )CHARACTER SET=utf8mb4 COMMENT='公告类型表';
 
--- 公告用户关联表
-CREATE TABLE `sys_notice_user` (
+-- 公告部门关联表
+CREATE TABLE `sys_notice_dept` (
     `notice_id`         VARCHAR(100)          NOT NULL                                  COMMENT '公告ID',
-    `user_id`           VARCHAR(100)          NOT NULL                                  COMMENT '用户ID',
-    `read_time`         DATETIME              DEFAULT NULL                              COMMENT '阅读时间',
-    `status`            TINYINT(1)            NOT NULL    DEFAULT '0'                   COMMENT '阅读状态: 0-未阅读, 1-已阅读',
-    PRIMARY KEY (`notice_id`,`user_id`)
-)CHARACTER SET=utf8mb4 COMMENT='公告用户关联表';
+    `dept_id`           VARCHAR(100)          NOT NULL                                  COMMENT '用户ID',
+    PRIMARY KEY (`notice_id`,`dept_id`)
+)CHARACTER SET=utf8mb4 COMMENT='公告部门关联表';

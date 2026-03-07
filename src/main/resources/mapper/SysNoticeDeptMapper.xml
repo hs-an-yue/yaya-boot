@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yaya.boot.mapper.SysNoticeDeptMapper">
+
+    <select id="mySysNoticePageByDeptId" resultType="sysNotice">
+        SELECT
+            n.*
+        FROM
+            sys_notice n,
+            sys_notice_dept nd
+        WHERE
+            n.notice_id = nd.notice_id
+            AND nd.dept_id = #{deptId}
+        ORDER BY
+            n.is_top DESC,
+            n.notice_level DESC,
+            n.update_time DESC
+    </select>
+    
+</mapper>

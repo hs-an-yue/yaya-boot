@@ -24,15 +24,11 @@ public interface SysNoticeService {
      */
     SysNotice getSysNoticeById(String noticeId);
     /**
-     * 公告列表页 - 基于发布人
+     * 公告列表页 - 基于部门
      */
-    Page getSysNoticePageByPublishUserId(Integer pageNo,Integer pageSize,String publishUserId);
+    Page getSysNoticePageByPublishUserId(Integer pageNo,Integer pageSize,String deptId);
     /**
-     * 公告列表页 - 我的公告
+     * 公告列表页 - 我的部门公告
      */
-    Page mySysNoticePageByUserId(Integer pageNo,Integer pageSize,String userId);
-    /**
-     * 公告阅读
-     */
-    void readSysNoticeByNoticeIdAndUserId(String noticeId,String userId);
+    Page mySysNoticePageByDeptId(Integer pageNo,Integer pageSize,String deptId);
 }

@@ -16,7 +16,7 @@
             <div class="layui-panel card-border">
                 <!-- 菜单操作按钮 -->
                 <div style="display: flex;flex-direction: row;justify-content: flex-end;padding: 10px;">
-                    <button id="add-notice" type="button" class="yaya-btn yaya-primary">发布</button>
+                    <button id="add-notice" type="button" class="yaya-btn yaya-primary">发布公告</button>
                 </div>
                 <!-- 表格显示 -->
                 <table class="layui-hide" id="table-notice" lay-filter="table-notice"></table>
@@ -90,6 +90,19 @@
                         },
                         success: function(layero, index){
                             layer.full(index); // 最大化
+                        }
+                    });
+                }else if(event==='assign'){
+                    layer.open({
+                        type: 2, // page 层类型 iframe
+                        area: ['450px', '350px'],
+                        title: '分配用户',
+                        shade: 0.6, // 遮罩透明度
+                        shadeClose: true, // 点击遮罩区域，关闭弹层
+                        content: `notice-assign.html?noticeId=${obj.data.noticeId}`,
+                        end: function(){
+                            //刷新表格
+                            table.reload('table-notice');
                         }
                     });
                 }else{
@@ -201,6 +214,7 @@
                             let str='<button class="yaya-btn is-link-primary yaya-btn-small" lay-event="edit">更新</button>';
                             str+='<button class="yaya-btn is-link-danger yaya-btn-small" lay-event="del">删除</button>';
                             str+='<button class="yaya-btn is-link-success yaya-btn-small" lay-event="detail">详情</button>';
+                            str+='<button class="yaya-btn is-link-warning yaya-btn-small" lay-event="assign">公告分配</button>';
                             return str;
                         }
                     }
